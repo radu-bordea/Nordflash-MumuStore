@@ -13,3 +13,4 @@
 
 # libraries
 - npm install react-icons
+- npm install next-themes
