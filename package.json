@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npxprisma generate && next dev",
+    "build": "npx prisma generate && next dev",
     "start": "next start",
     "lint": "eslint"
   },
