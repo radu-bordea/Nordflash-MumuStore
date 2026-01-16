@@ -14,7 +14,7 @@ function LinksDropdown() {
   return (
     <div>
       <DropdownMenu>
-        <DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild>
           <Button variant="outline" className="flex gap-4 max-w-25">
             <LuAlignLeft className="w-6 h-6" />
           </Button>
