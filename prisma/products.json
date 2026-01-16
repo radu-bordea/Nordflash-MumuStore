@@ -1,38 +1,38 @@
 [
   {
-    "name": "avant-garde lamp",
-    "company": "Modenza",
-    "description": "Cloud bread VHS hell of banjo bicycle rights jianbing umami mumblecore etsy 8-bit pok pok +1 wolf. Vexillologist yr dreamcatcher waistcoat, authentic chillwave trust fund. Viral typewriter fingerstache pinterest pork belly narwhal. Schlitz venmo everyday carry kitsch pitchfork chillwave iPhone taiyaki trust fund hashtag kinfolk microdosing gochujang live-edge",
+    "name": "HydraGlow Daily Moisturizer",
+    "company": "DermaLux",
+    "description": "A lightweight daily face cream designed to deeply hydrate and restore the skin barrier. Infused with hyaluronic acid and vitamin B5, it leaves skin soft, plump, and radiant without clogging pores. Suitable for all skin types, including sensitive skin.",
     "featured": true,
-    "image": "https://images.pexels.com/photos/943150/pexels-photo-943150.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    "price": 100,
+    "image": "https://images.pexels.com/photos/5928039/pexels-photo-5928039.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    "price": 45,
     "clerkId": "clerkId"
   },
   {
-    "name": "chic chair",
-    "company": "Luxora",
-    "description": "Cloud bread VHS hell of banjo bicycle rights jianbing umami mumblecore etsy 8-bit pok pok +1 wolf. Vexillologist yr dreamcatcher waistcoat, authentic chillwave trust fund. Viral typewriter fingerstache pinterest pork belly narwhal. Schlitz venmo everyday carry kitsch pitchfork chillwave iPhone taiyaki trust fund hashtag kinfolk microdosing gochujang live-edge",
+    "name": "Renewal Night Repair Cream",
+    "company": "SkinRevive",
+    "description": "A rich overnight cream formulated to support skin renewal while you sleep. Powered by peptides and ceramides, it helps improve elasticity, smooth fine lines, and strengthen the skin’s natural repair process.",
     "featured": true,
-    "image": "https://images.pexels.com/photos/5705090/pexels-photo-5705090.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    "price": 200,
+    "image": "https://images.pexels.com/photos/4046316/pexels-photo-4046316.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    "price": 60,
     "clerkId": "clerkId"
   },
   {
-    "name": "comfy bed",
-    "company": "Homestead",
-    "description": "Cloud bread VHS hell of banjo bicycle rights jianbing umami mumblecore etsy 8-bit pok pok +1 wolf. Vexillologist yr dreamcatcher waistcoat, authentic chillwave trust fund. Viral typewriter fingerstache pinterest pork belly narwhal. Schlitz venmo everyday carry kitsch pitchfork chillwave iPhone taiyaki trust fund hashtag kinfolk microdosing gochujang live-edge",
-    "featured": true,
-    "image": "https://images.pexels.com/photos/1034584/pexels-photo-1034584.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    "price": 300,
-    "clerkId": "clerkId"
-  },
-  {
-    "name": "contemporary sofa",
-    "company": "Comfora",
-    "description": "Cloud bread VHS hell of banjo bicycle rights jianbing umami mumblecore etsy 8-bit pok pok +1 wolf. Vexillologist yr dreamcatcher waistcoat, authentic chillwave trust fund. Viral typewriter fingerstache pinterest pork belly narwhal. Schlitz venmo everyday carry kitsch pitchfork chillwave iPhone taiyaki trust fund hashtag kinfolk microdosing gochujang live-edge",
+    "name": "Calm & Soothe Barrier Cream",
+    "company": "PureDerm",
+    "description": "A soothing cream developed to calm irritated or stressed skin. Enriched with centella asiatica and oat extract, it reduces redness and reinforces the skin barrier, making it ideal for post-treatment or sensitive skin routines.",
     "featured": false,
-    "image": "https://images.pexels.com/photos/1571459/pexels-photo-1571459.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    "price": 400,
+    "image": "https://images.pexels.com/photos/4046314/pexels-photo-4046314.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    "price": 38,
+    "clerkId": "clerkId"
+  },
+  {
+    "name": "BrightBalance Vitamin C Cream",
+    "company": "Luminé",
+    "description": "A brightening face cream infused with stabilized vitamin C to even skin tone and enhance natural glow. Regular use helps reduce dullness and the appearance of dark spots while providing long-lasting hydration.",
+    "featured": false,
+    "image": "https://images.pexels.com/photos/6663469/pexels-photo-6663469.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    "price": 52,
     "clerkId": "clerkId"
   }
 ]
