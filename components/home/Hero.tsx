@@ -10,8 +10,7 @@ const Hero = () => {
           Find best products in Bodø, Norway
         </h1>
         <p className="mt-8 max-w-xl text-lg leading-8 text-muted-foreground">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquam ad
-          quis odit minima nemo soluta, ipsam eligendi totam optio unde?
+          Discover Bodø’s newest store offering natural, trustworthy skin, beauty, and fashion products designed to enhance your glow and confidence.
         </p>
         <Button asChild size="lg" className="mt-10">
           <Link href="/products">Our Products</Link>
