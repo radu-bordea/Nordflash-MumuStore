@@ -24,12 +24,15 @@ export const fetchAllProducts = async ({ search = "" }: { search: string }) => {
   });
 };
 
-export const fectchSingleProduct = async (productId: string) => {
+
+export const fetchSingleProduct = async (productId?: string) => {
+  if (!productId) redirect("/products");
+
   const product = await prisma.product.findUnique({
-    where: {
-      id: productId,
-    },
+    where: { id: productId },
   });
+
   if (!product) redirect("/products");
+
   return product;
 };
