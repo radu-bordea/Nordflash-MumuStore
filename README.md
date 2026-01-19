@@ -14,6 +14,7 @@
 # libraries
 - npm install react-icons
 - npm install next-themes
+- npm i use debounce
 
 # prisma
 - npm install prisma tsx @types/pg --save-dev

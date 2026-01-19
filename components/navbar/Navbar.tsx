@@ -4,6 +4,7 @@ import { DarkMode } from "./DarkMode";
 import LinksDropdown from "./LinksDropdown";
 import Logo from "./Logo";
 import NavSearch from "./NavSearch";
+import { Suspense } from "react";
 
 function Navbar() {
   return (
@@ -11,7 +12,9 @@ function Navbar() {
       <Container className="flex flex-col-reverse sm:flex-row sm:justify-between sm:items-center flex-wrap gap-6 py-8">
         <div className="flex gap-4 justify-center">
           <Logo />
-          <NavSearch />
+          <Suspense>
+            <NavSearch />
+          </Suspense>
         </div>
         <div className="flex gap-4 items-center justify-end">
           {/* Future nav items can go here */}
