@@ -27,3 +27,6 @@
 
 - npx prisma db seed
 - npx prisma studio
+
+# clerk
+- npm install @clerk/nextjs
