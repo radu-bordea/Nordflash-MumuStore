@@ -13,6 +13,7 @@ function SignOutLink() {
     <SignOutButton> 
       <Link href="/" className="w-full text-left" onClick={handleLogout}>Logout</Link>
     </SignOutButton>
+    
   );
 }
 export default SignOutLink;
