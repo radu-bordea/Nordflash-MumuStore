@@ -1,3 +1,4 @@
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,10 +13,11 @@ import { links } from "@/utils/links";
 import UserIcon from "./UserIcon";
 import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs";
 import SignOutLink from "./SignOutLink";
-import { toast } from "sonner";
+import { auth } from "@clerk/nextjs/server";
 
-function LinksDropdown() {
-
+async function LinksDropdown() {
+  const { userId } = await auth(); // never throws
+  const isAdmin = userId === process.env.ADMIN_USER_ID;
   return (
     <div>
       <DropdownMenu>
@@ -29,9 +31,7 @@ function LinksDropdown() {
           <SignedOut>
             <DropdownMenuItem>
               <SignInButton mode="modal">
-                <button className="w-full text-left" >
-                  Login
-                </button>
+                <button className="w-full text-left">Login</button>
               </SignInButton>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -43,6 +43,7 @@ function LinksDropdown() {
           </SignedOut>
           <SignedIn>
             {links.map((link) => {
+              if (link.label === 'dashboard' && !isAdmin) return null;
               return (
                 <DropdownMenuItem key={link.href}>
                   <Link href={link.href} className="capitalize w-full">
