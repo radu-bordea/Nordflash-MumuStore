@@ -1,11 +1,5 @@
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
+import { auth } from "@clerk/nextjs/server";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { LuAlignLeft } from "react-icons/lu";
 import Link from "next/link";
 import { Button } from "../ui/button";
@@ -13,11 +7,12 @@ import { links } from "@/utils/links";
 import UserIcon from "./UserIcon";
 import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs";
 import SignOutLink from "./SignOutLink";
-import { auth } from "@clerk/nextjs/server";
 
 async function LinksDropdown() {
-  const { userId } = await auth(); // never throws
-  const isAdmin = userId === process.env.ADMIN_USER_ID;
+  const { userId } = await auth(); 
+  const adminIds = process.env.ADMIN_USER_IDS?.split(",") || [];
+  const isAdmin = userId ? adminIds.includes(userId) : false;
+
   return (
     <div>
       <DropdownMenu>
@@ -43,7 +38,7 @@ async function LinksDropdown() {
           </SignedOut>
           <SignedIn>
             {links.map((link) => {
-              if (link.label === 'dashboard' && !isAdmin) return null;
+              if (link.label === "dashboard" && !isAdmin) return null;
               return (
                 <DropdownMenuItem key={link.href}>
                   <Link href={link.href} className="capitalize w-full">
@@ -62,4 +57,5 @@ async function LinksDropdown() {
     </div>
   );
 }
+
 export default LinksDropdown;
