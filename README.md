@@ -15,6 +15,7 @@
 - npm install react-icons
 - npm install next-themes
 - npm i use debounce
+- npm install @faker-js/faker --save-dev
 
 # prisma
 - npm install prisma tsx @types/pg --save-dev
