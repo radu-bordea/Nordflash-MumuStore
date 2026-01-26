@@ -13,6 +13,7 @@
 
 # libraries
 - npm install react-icons
+- npm install @radix-ui/react-icons
 - npm install next-themes
 - npm i use debounce
 - npm install @faker-js/faker --save-dev

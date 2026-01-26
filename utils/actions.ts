@@ -1,3 +1,5 @@
+"use server";
+
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
 
@@ -24,9 +26,7 @@ export const fetchAllProducts = async ({ search = "" }: { search: string }) => {
   });
 };
 
-
-export const fetchSingleProduct = async (productId: string ) => {
-  
+export const fetchSingleProduct = async (productId: string) => {
   if (!productId) redirect("/products");
 
   const product = await prisma.product.findUnique({
@@ -36,4 +36,11 @@ export const fetchSingleProduct = async (productId: string ) => {
   if (!product) redirect("/products");
 
   return product;
+};
+
+export const createProductAction = async (
+  prevState: unknown,
+  formData: FormData,
+): Promise<{ message: string }> => {
+  return { message: "product created" };
 };
