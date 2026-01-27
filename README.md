@@ -18,6 +18,7 @@
 - npm i use debounce
 - npm install @faker-js/faker --save-dev
 - npm install zod
+- npm install @supabase/supabase-js
 
 # prisma
 - npm install prisma tsx @types/pg --save-dev
