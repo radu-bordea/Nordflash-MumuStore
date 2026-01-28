@@ -11,6 +11,15 @@ const getAuthUser = async () => {
   return user;
 };
 
+const getAdminUser = async () => {
+  const user = await getAuthUser();
+  const admins: string[] = process.env.ADMIN_USER_IDS?.split(",") ?? [];
+  console.log(admins, user.id);
+  
+  if (!admins.includes(user.id)) redirect("/");
+  return user;
+};
+
 const renderError = (
   error: unknown,
 ): {
@@ -80,4 +89,14 @@ export const createProductAction = async (
     return renderError(error);
   }
   redirect("/admin/products");
+};
+
+export const fetchAdminProducts = async () => {
+  await getAdminUser();
+  const products = await prisma.product.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+  return products;
 };
