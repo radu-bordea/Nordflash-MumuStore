@@ -30,7 +30,6 @@ export function SubmitButton({
       disabled={pending}
       className={cn("capitalize", className)}
       size={size}
-      onClick={() => toast("Product created!")}
     >
       {pending ? (
         <>
@@ -67,7 +66,7 @@ export const IconButton = ({ actionType }: { actionType: actionType }) => {
       size="icon"
       variant="link"
       className="p-2 cursor-pointer"
-      onClick={() => toast("Product deleted!")}
+      onClick={() => toast("Redirect to edit the product!")}
     >
       {pending ? <ReloadIcon className="animate" /> : renderIcon()}
     </Button>

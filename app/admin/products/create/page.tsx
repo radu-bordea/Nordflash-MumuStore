@@ -4,7 +4,7 @@ import FormContainer from "@/components/form/FormContainer";
 import FormInput from "@/components/form/FormInput";
 import ImageInput from "@/components/form/ImageInput";
 import PriceInput from "@/components/form/PriceInput";
-import TextAreaInput from "@/components/form/TextArea";
+import TextAreaInput from "@/components/form/TextAreaInput";
 import { createProductAction } from "@/utils/actions";
 import { faker } from "@faker-js/faker";
 
