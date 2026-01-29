@@ -128,7 +128,7 @@ export const fetchAdminProductDetails = async (productId: string) => {
       id: productId,
     },
   });
-  if (!productId) redirect("/admin/products");
+  if (!product) redirect("/admin/products");
   return product;
 };
 
@@ -136,9 +136,27 @@ export const updateProductAction = async (
   prevState: any,
   formData: FormData,
 ) => {
-  return { message: "Product updated successfully" };
-};
+  await getAdminUser();
 
+  try {
+    const productId = formData.get("id") as string;
+    const rawData = Object.fromEntries(formData);
+    const validateFields = validateWithZodSchema(productSchema, rawData);
+
+    await prisma.product.update({
+      where: {
+        id: productId,
+      },
+      data: {
+        ...validateFields,
+      },
+    });
+    revalidatePath(`/admin/products/${productId}/edit`);
+    return { message: "Product updated successfully" };
+  } catch (error) {
+    return renderError(error);
+  }
+};
 export const updateProductImageAction = async (
   prevState: any,
   formData: FormData,
