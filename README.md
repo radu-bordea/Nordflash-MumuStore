@@ -31,6 +31,7 @@
 
 - npx prisma db seed
 - npx prisma studio
+- npx prisma db push // after added Favorite modul and relation with Product
 
 # clerk
 - npm install @clerk/nextjs
