@@ -9,14 +9,14 @@ import { Suspense } from "react";
 function Navbar() {
   return (
     <div className="border-b">
-      <Container className="flex flex-col-reverse sm:flex-row sm:justify-between sm:items-center flex-wrap gap-6 py-8">
-        <div className="flex gap-4 justify-center">
+      <Container className="flex flex-row  sm:justify-between sm:items-center gap-2 pt-4 pb-4">
+        <div className="flex gap-2 md:gap-4 justify-center">
           <Logo />
-          <Suspense>
-            <NavSearch />
-          </Suspense>
         </div>
-        <div className="flex gap-4 items-center justify-end">
+        <Suspense>
+          <NavSearch />
+        </Suspense>
+        <div className="flex gap-2 md:gap-4 items-center justify-end">
           {/* Future nav items can go here */}
           <CartButton />
           <DarkMode />
