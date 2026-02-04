@@ -19,6 +19,7 @@
 - npm install @faker-js/faker --save-dev
 - npm install zod
 - npm install @supabase/supabase-js
+- npm i react-share
 
 # prisma
 - npm install prisma tsx @types/pg --save-dev
