@@ -253,7 +253,7 @@ export const fetchUsersFavorites = async () => {
 
 export const createReviewAction = async (
   prevState: unknown,
-  formData: FormData
+  formData: FormData,
 ) => {
   const user = await getAuthUser();
   try {
@@ -268,25 +268,45 @@ export const createReviewAction = async (
       },
     });
     revalidatePath(`/products/${validatedFields.productId}`);
-    return { message: 'Review submitted successfully' };
+    return { message: "Review submitted successfully" };
   } catch (error) {
     return renderError(error);
   }
 };
 
-export const fetchProductReviews = async (productId:string) => {
+export const fetchProductReviews = async (productId: string) => {
   const reviews = await prisma.review.findMany({
     where: {
       productId,
     },
     orderBy: {
-      createdAt: 'desc'
-    }
-  })
-  return reviews
+      createdAt: "desc",
+    },
+  });
+  return reviews;
+};
+
+export const fetchProductRating = async (productId: string) => {
+  const result = await prisma.review.groupBy({
+    by: ["productId"],
+    _avg: {
+      rating: true,
+    },
+    _count: {
+      rating: true,
+    },
+    where: {
+      productId,
+    },
+  });
+
+  // empty array if no reviews
+  return {
+    rating: result[0]?._avg.rating?.toFixed(1) ?? 0,
+    count: result[0]?._count.rating ?? 0,
+  };
 };
 
 export const fetchProductReviewsByUser = async () => {};
 export const deleteReviewAction = async () => {};
 export const findExistingReview = async () => {};
-export const fetchProductRating = async () => {};
