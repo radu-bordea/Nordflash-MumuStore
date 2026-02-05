@@ -101,7 +101,7 @@ export const CardSubmitButton = ({ isFavorite }: { isFavorite: boolean }) => {
       {pending ? (
         <ReloadIcon className="animate-spin" />
       ) : isFavorite ? (
-        <FaHeart />
+        <FaHeart className="text-red-500"/>
       ) : (
         <FaRegHeart />
       )}
