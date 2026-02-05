@@ -141,7 +141,7 @@ export const fetchAdminProductDetails = async (productId: string) => {
 };
 
 export const updateProductAction = async (
-  prevState: any,
+  prevState: unknown,
   formData: FormData,
 ) => {
   await getAdminUser();
@@ -166,7 +166,7 @@ export const updateProductAction = async (
   }
 };
 export const updateProductImageAction = async (
-  prevState: any,
+  prevState: unknown,
   formData: FormData,
 ) => {
   await getAuthUser();
@@ -327,5 +327,21 @@ export const fetchProductReviewsByUser = async () => {
   });
   return reviews;
 };
-export const deleteReviewAction = async () => {};
+export const deleteReviewAction = async (prevState: { reviewId: string }) => {
+  const { reviewId } = prevState;
+  const user = await getAuthUser();
+  try {
+    await prisma.review.delete({
+      where: {
+        id: reviewId,
+        clerkId: user.id,
+      },
+    });
+    revalidatePath("/reviews");
+    return {message: 'review deleted successfully'}
+  } catch (error) {
+    return renderError(error);
+  }
+};
+
 export const findExistingReview = async () => {};
