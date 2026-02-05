@@ -6,6 +6,8 @@ import FavoriteToggleButton from "@/components/products/FavoriteToggleButton";
 import AddToCart from "@/components/single-product/AddToCart";
 import ProductRating from "@/components/single-product/ProductRating";
 import ShareButton from "@/components/single-product/ShareButton";
+import SubmitReview from "@/components/reviews/SubmitReview";
+import ProductReviews from "@/components/reviews/ProductReviews";
 
 async function SingleProductPage({
   params,
@@ -36,6 +38,7 @@ async function SingleProductPage({
             className="w-full rounded-md object-cover"
           />
         </div>
+
         {/* PRODUCT INFO SECOND COL */}
         <div>
           <div className="flex gap-x-8 items-center">
@@ -54,6 +57,9 @@ async function SingleProductPage({
           <AddToCart productId={id} />
         </div>
       </div>
+
+      <ProductReviews productId={id} />
+      <SubmitReview productId={id} />
     </section>
   );
 }
