@@ -66,7 +66,7 @@ export const IconButton = ({ actionType }: { actionType: actionType }) => {
       size="icon"
       variant="link"
       className="p-2 cursor-pointer"
-      onClick={() => toast("Redirect to edit the product!")}
+      onClick={() => toast(`${actionType}`)}
     >
       {pending ? <ReloadIcon className="animate" /> : renderIcon()}
     </Button>

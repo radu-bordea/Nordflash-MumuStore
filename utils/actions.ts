@@ -94,6 +94,7 @@ export const createProductAction = async (
         clerkId: user.id,
       },
     });
+    revalidatePath("/admin/products");
   } catch (error) {
     return renderError(error);
   }
@@ -317,8 +318,6 @@ export const fetchProductReviewsByUser = async () => {
       id: true,
       rating: true,
       comment: true,
-      authorName: true,
-      authorImageUrl: true,
       product: {
         select: {
           image: true,
@@ -346,4 +345,11 @@ export const deleteReviewAction = async (prevState: { reviewId: string }) => {
   }
 };
 
-export const findExistingReview = async () => {};
+export const findExistingReview = async (userId:string, productId:string) => {
+  return prisma.review.findFirst({
+    where: {
+      clerkId: userId,
+      productId: productId,
+    },
+  });
+}
