@@ -16,9 +16,9 @@ async function ReviewsPage() {
       <SectionTitle text="Your Reviews" />
       <section className="grid md:grid-cols-2 gap-8 mt-4">
         {reviews.map((review) => {
-          const { comment, rating } = review;
+          const { comment, rating, authorName, authorImageUrl } = review;
           const { name, image } = review.product;
-          const reviewInfo = { comment, rating, name, image };
+          const reviewInfo = { comment, rating, name, image, authorName, authorImageUrl };
 
           return (
             <ReviewCard key={review.id} reviewInfo={reviewInfo}>

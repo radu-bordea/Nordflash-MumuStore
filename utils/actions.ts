@@ -317,6 +317,8 @@ export const fetchProductReviewsByUser = async () => {
       id: true,
       rating: true,
       comment: true,
+      authorName: true,
+      authorImageUrl: true,
       product: {
         select: {
           image: true,
