@@ -1,6 +1,6 @@
 "use server";
 import prisma from "@/lib/prisma";
-import { currentUser } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import {
   imageSchema,
@@ -339,22 +339,33 @@ export const deleteReviewAction = async (prevState: { reviewId: string }) => {
       },
     });
     revalidatePath("/reviews");
-    return {message: 'review deleted successfully'}
+    return { message: "review deleted successfully" };
   } catch (error) {
     return renderError(error);
   }
 };
 
-export const findExistingReview = async (userId:string, productId:string) => {
+export const findExistingReview = async (userId: string, productId: string) => {
   return prisma.review.findFirst({
     where: {
       clerkId: userId,
       productId: productId,
     },
   });
-}
+};
 
-export const fetchCartItems = async () => {};
+export const fetchCartItems = async () => {
+  const { userId } = await auth();
+  const cart = await prisma.cart.findFirst({
+    where: {
+      clerkId: userId ?? "",
+    },
+    select: {
+      numItemsInCart: true,
+    },
+  });
+  return cart?.numItemsInCart || 0;
+};
 
 const fetchProduct = async () => {};
 
