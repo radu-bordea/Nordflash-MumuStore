@@ -101,10 +101,18 @@ export const CardSubmitButton = ({ isFavorite }: { isFavorite: boolean }) => {
       {pending ? (
         <ReloadIcon className="animate-spin" />
       ) : isFavorite ? (
-        <FaHeart className="text-red-500"/>
+        <FaHeart className="text-red-500" />
       ) : (
         <FaRegHeart />
       )}
     </Button>
   );
+};
+
+export const ProductSignInButton = () => {
+  return <SignInButton mode="modal">
+    <Button type="button" className="mt-8 capitalize">
+      sign in
+    </Button>
+  </SignInButton>;
 };
