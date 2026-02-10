@@ -1,37 +1,30 @@
-import CartItemsList from "@/components/cart/CartItemsList";
-import CartTotals from "@/components/cart/CartTotals";
-import SectionTitle from "@/components/global/SectionTitle";
-import { fetchOrCreateCart, updateCart } from "@/utils/actions";
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
-
-import React from "react";
-
-export default async function page() {
+import CartItemsList from '@/components/cart/CartItemsList';
+import CartTotals from '@/components/cart/CartTotals';
+import SectionTitle from '@/components/global/SectionTitle';
+import { fetchOrCreateCart, updateCart } from '@/utils/actions';
+import { auth } from '@clerk/nextjs/server';
+import { redirect } from 'next/navigation';
+async function CartPage() {
   const { userId } = await auth();
-  if (!userId) {
-    redirect("/");
-  }
+  if (!userId) redirect('/');
+  const cart = await fetchOrCreateCart({ userId });
+  await updateCart(cart);
 
-  const previousCart = await fetchOrCreateCart({ userId });
-  const cart = await updateCart(previousCart);
   if (cart.numItemsInCart === 0) {
-    return <SectionTitle text="Your cart is empty" />;
+    return <SectionTitle text='Empty cart' />;
   }
-
   return (
     <>
-      <SectionTitle text="Shopping Cart" />
-      <div className="mt-8 grid gap-4 lg:grid-cols-12">
-        <div className="lg:col-span-8">
+      <SectionTitle text='Shopping Cart' />
+      <div className='mt-8 grid gap-4 lg:grid-cols-12'>
+        <div className='lg:col-span-8'>
           <CartItemsList cartItems={cart.cartItems} />
         </div>
-        <div className="lg:span-4">
+        <div className='lg:col-span-4 lg:pl-4'>
           <CartTotals cart={cart} />
         </div>
       </div>
     </>
   );
-
-  return <div></div>;
 }
+export default CartPage;
