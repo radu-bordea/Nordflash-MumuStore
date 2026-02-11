@@ -457,6 +457,7 @@ export const updateCart = async (cart: Cart) => {
     include: {
       product: true, // include the related product
     },
+    orderBy: {  createdAt: "asc" },
   });
   let numItemsInCart = 0;
   let cartTotal = 0;
@@ -481,7 +482,7 @@ export const updateCart = async (cart: Cart) => {
     },
     include: includeProductClause,
   });
-  return currentCart;
+  return {cartItems, currentCart};
 };
 
 export const addToCartAction = async (
