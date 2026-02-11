@@ -6,12 +6,23 @@ import FormContainer from '../form/FormContainer';
 import { SubmitButton } from '../form/Buttons';
 import { removeCartItemAction, updateCartItemAction } from '@/utils/actions';
 import { toast } from 'sonner';
+import { set } from 'zod';
 
 function ThirdColumn({ quantity, id }: { quantity: number; id: string }) {
   const [amount, setAmount] = useState(quantity);
+  const [isLoading, setIsLoading] = useState(false);
+  
 
   const handleAmountChange = async (value: number) => {
+    setIsLoading(true);
+    toast.success("Calculating...");
+    const result = await updateCartItemAction({
+      amount: value,
+      cartItemId:id,
+    });
     setAmount(value);
+    toast.message(result.message);
+    setIsLoading(false);
   };
 
   return (
