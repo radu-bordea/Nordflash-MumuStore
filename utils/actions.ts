@@ -481,10 +481,13 @@ export const updateCart = async (cart: Cart) => {
     },
     include: includeProductClause,
   });
-  return currentCart
+  return currentCart;
 };
 
-export const addToCartAction = async (prevSTate: any, formData: FormData) => {
+export const addToCartAction = async (
+  prevSTate: unknown,
+  formData: FormData,
+) => {
   const user = await getAuthUser();
   try {
     const productId = formData.get("productId") as string;
@@ -494,7 +497,7 @@ export const addToCartAction = async (prevSTate: any, formData: FormData) => {
     await updateOrCreateCartItem({ productId, amount, cartId: cart.id });
     await updateCart(cart);
 
-     // ✅ This fixes the navbar cart count
+    // ✅ This fixes the navbar cart count
     revalidatePath("/", "layout");
   } catch (error) {
     renderError(error);
@@ -502,10 +505,36 @@ export const addToCartAction = async (prevSTate: any, formData: FormData) => {
   redirect("/cart");
 };
 
-export const removeCartItemAction = async () => {};
+export const removeCartItemAction = async (
+  prevState: unknown,
+  formData: FormData,
+) => {
+  const user = await getAuthUser();
+  try {
+    const cartItemId = formData.get("id") as string;
+    const cart = await fetchOrCreateCart({
+      userId: user.id,
+      errorOnFailure: true,
+    });
+    await prisma.cartItem.delete({
+      where: {
+        id: cartItemId,
+        cartId: cart.id,
+      },
+    });
+    await updateCart(cart);
+    revalidatePath("/cart");
+    return { message: "Item removed from cart" };
+  } catch (error) {
+    return renderError(error);
+  }
+};
 
 export const updateCartItemAction = async () => {};
 
-export const createOrderAction = async (prevState:any, formData:FormData) => {
-  return {message: "Order created successfully"};
+export const createOrderAction = async (
+  prevState: unknown,
+  formData: FormData,
+) => {
+  return { message: "Order created successfully" };
 };

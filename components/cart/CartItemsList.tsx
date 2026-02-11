@@ -20,7 +20,7 @@ export default function CartItemsList({
           >
             <FirstColumn image={image} name={name} />
             <SecondColumn name={name} company={company} productId={productId} />
-            <ThirdColumn id={id} amount={amount} />
+            <ThirdColumn id={id} quantity={amount} />
             <FourthColumn price={price} />
           </Card>
         );

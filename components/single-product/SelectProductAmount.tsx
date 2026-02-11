@@ -39,7 +39,7 @@ function SelectProductAmount(
         onValueChange={(value) => setAmount(Number(value))}
         disabled={cartItem ? props.isLoading : false}
       >
-        <SelectTrigger className={cartItem ? 'w-[100px]' : 'w-[150px]'}>
+        <SelectTrigger className={cartItem ? 'w-25' : 'w-37.5'}>
           <SelectValue placeholder={amount} />
         </SelectTrigger>
         <SelectContent>
