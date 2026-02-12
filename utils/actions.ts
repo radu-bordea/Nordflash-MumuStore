@@ -1,6 +1,6 @@
 "use server";
 import prisma from "@/lib/prisma";
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { auth, currentUser, EmailAddress } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import {
   imageSchema,
@@ -457,7 +457,7 @@ export const updateCart = async (cart: Cart) => {
     include: {
       product: true, // include the related product
     },
-    orderBy: {  createdAt: "asc" },
+    orderBy: { createdAt: "asc" },
   });
   let numItemsInCart = 0;
   let cartTotal = 0;
@@ -482,7 +482,7 @@ export const updateCart = async (cart: Cart) => {
     },
     include: includeProductClause,
   });
-  return {cartItems, currentCart};
+  return { cartItems, currentCart };
 };
 
 export const addToCartAction = async (
@@ -566,5 +566,29 @@ export const createOrderAction = async (
   prevState: unknown,
   formData: FormData,
 ) => {
-  return { message: "Order created successfully" };
+  const user = await getAuthUser();
+  try {
+    const cart = await fetchOrCreateCart({
+      userId: user.id,
+      errorOnFailure: true,
+    });
+    const order = await prisma.order.create({
+      data: {
+        clerkId: user.id,
+        products: cart.numItemsInCart,
+        orderTotal: cart.orderTotal,
+        tax: cart.tax,
+        shipping: cart.shipping,
+        email: user.emailAddresses[0].emailAddress,
+      },
+    });
+    await prisma.cart.delete({
+      where: {
+        id: cart.id,
+      },
+    })
+  } catch (error) {
+    return renderError(error);
+  }
+  redirect("/orders");
 };
