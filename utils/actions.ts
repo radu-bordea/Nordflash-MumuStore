@@ -586,9 +586,23 @@ export const createOrderAction = async (
       where: {
         id: cart.id,
       },
-    })
+    });
   } catch (error) {
     return renderError(error);
   }
   redirect("/orders");
+};
+
+export const fetchUserOrders = async () => {
+  const user = await getAuthUser();
+  const orders = await prisma.order.findMany({
+    where: {
+      clerkId: user.id,
+      isPaid: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+  return orders;
 };
