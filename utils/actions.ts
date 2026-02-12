@@ -606,3 +606,16 @@ export const fetchUserOrders = async () => {
   });
   return orders;
 };
+export const fetchAdminOrders = async () => {
+  const user = await getAdminUser();
+  const orders = await prisma.order.findMany({
+    where: {
+      isPaid: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+  return orders;
+};
+
