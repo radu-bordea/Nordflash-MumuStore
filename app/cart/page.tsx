@@ -11,11 +11,11 @@ async function CartPage() {
   const { cartItems, currentCart } = await updateCart(previousCart);
 
   if (cartItems.length === 0) {
-    return <SectionTitle text='Empty cart' />;
+    return <SectionTitle text='Tom handlekurv' />;
   }
   return (
     <>
-      <SectionTitle text='Shopping Cart' />
+      <SectionTitle text='Handlekurv' />
       <div className='mt-8 grid gap-4 lg:grid-cols-12'>
         <div className='lg:col-span-8'>
           <CartItemsList cartItems={cartItems} />

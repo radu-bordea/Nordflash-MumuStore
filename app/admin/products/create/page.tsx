@@ -15,20 +15,20 @@ const CreateProductPage = () => {
 
   return (
     <section>
-      <h1 className="text-2xl font-semibold mb-8 capitalize">create product</h1>
+      <h1 className="text-2xl font-semibold mb-8 capitalize">lage produkt</h1>
       <div className="border p-8 rounded-md">
         <FormContainer action={createProductAction}>
           <div className="grid gap-4 md:grid-cols-2 my-4">
             <FormInput
               type="text"
               name="name"
-              label="product name"
+              label="produktnavn"
               defaultValue={name}
             />
             <FormInput
               type="text"
               name="company"
-              label="company"
+              label="bedrift"
               defaultValue={company}
             />
             <PriceInput />
@@ -36,13 +36,13 @@ const CreateProductPage = () => {
           </div>
           <TextAreaInput
             name="description"
-            labelText="product description"
+            labelText="produktbeskrivelse"
             defaultValue={description}
           />
           <div className="mt-6">
-            <CheckboxInput name="featured" label="featured" />
+            <CheckboxInput name="featured" label="fremhevet" />
           </div>
-          <SubmitButton text="create product" className="mt-8" />
+          <SubmitButton text="lage produkt" className="mt-8" />
         </FormContainer>
       </div>
     </section>

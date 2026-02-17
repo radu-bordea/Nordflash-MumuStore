@@ -26,7 +26,7 @@ async function LinksDropdown() {
           <SignedOut>
             <DropdownMenuItem>
               <SignInButton mode="modal">
-                <button className="w-full text-left">Login</button>
+                <button className="w-full text-left">Logg inn</button>
               </SignInButton>
             </DropdownMenuItem>
             <DropdownMenuSeparator />

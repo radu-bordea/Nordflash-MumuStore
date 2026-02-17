@@ -19,16 +19,16 @@ async function OrdersPage() {
 
   return (
     <>
-      <SectionTitle text="Your Orders" />
+      <SectionTitle text="Dine bestillinger" />
       <Table>
-        <TableCaption>Total Orders: {orders.length}</TableCaption>
+        <TableCaption>Totalt antall bestillinger: {orders.length}</TableCaption>
         <TableHeader>
           <TableRow >
-            <TableHead>Products</TableHead>
-            <TableHead>Order Total</TableHead>
-            <TableHead>Tax</TableHead>
-            <TableHead>Shipping</TableHead>
-            <TableHead>Date</TableHead>
+            <TableHead>Produkter</TableHead>
+            <TableHead>Totalt beløp</TableHead>
+            <TableHead>Avgift</TableHead>
+            <TableHead>Frakt</TableHead>
+            <TableHead>Dato</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

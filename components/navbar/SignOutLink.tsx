@@ -6,12 +6,12 @@ import Link from "next/link";
 
 function SignOutLink() {
   const handleLogout = () => {
-    toast.success("Logged out successfully")
+    toast.success("Logget ut")
   };
 
   return (
     <SignOutButton> 
-      <Link href="/" className="w-full text-left" onClick={handleLogout}>Logout</Link>
+      <Link href="/" className="w-full text-left" onClick={handleLogout}>Logg ut</Link>
     </SignOutButton>
     
   );

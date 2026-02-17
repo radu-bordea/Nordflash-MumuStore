@@ -14,12 +14,12 @@ export const uploadImage = async (image: File) => {
   const { data } = await supabase.storage
     .from(bucket)
     .upload(newName, image, { cacheControl: "3600" });
-  if (!data) throw new Error("Image upload failed");
+  if (!data) throw new Error("Bildeopplasting mislyktes");
   return supabase.storage.from(bucket).getPublicUrl(newName).data.publicUrl;
 };
 
 export const deleteImage = (url: string) => {
   const imageName = url.split("/").pop();
-  if (!imageName) throw new Error("Invalid URL");
+  if (!imageName) throw new Error("Ugyldig nettadresse");
   return supabase.storage.from(bucket).remove([imageName]);
 };

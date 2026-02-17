@@ -162,7 +162,7 @@ export const updateProductAction = async (
       },
     });
     revalidatePath(`/admin/products/${productId}/edit`);
-    return { message: "Product updated successfully" };
+    return { message: "Produktet ble oppdatert vellykket" };
   } catch (error) {
     return renderError(error);
   }
@@ -189,7 +189,7 @@ export const updateProductImageAction = async (
       },
     });
     revalidatePath(`/admin/products/${productId}/edit`);
-    return { message: "Product Image updated successfully" };
+    return { message: "Produktets bilde ble oppdatert vellykket" };
   } catch (error) {
     return renderError(error);
   }
@@ -234,7 +234,7 @@ export const toggleFavoriteAction = async (prevState: {
       });
     }
     revalidatePath(pathname);
-    return { message: favoriteId ? "removed from faves" : "added to faves" };
+    return { message: favoriteId ? "favourite fjernet" : "favourite lagt til" };
   } catch (error) {
     return renderError(error);
   }
@@ -270,7 +270,7 @@ export const createReviewAction = async (
       },
     });
     revalidatePath(`/products/${validatedFields.productId}`);
-    return { message: "Review submitted successfully" };
+    return { message: "Anmeldelse sendt inn" };
   } catch (error) {
     return renderError(error);
   }
@@ -340,7 +340,7 @@ export const deleteReviewAction = async (prevState: { reviewId: string }) => {
       },
     });
     revalidatePath("/reviews");
-    return { message: "review deleted successfully" };
+    return { message: "anmeldelsen er slettet" };
   } catch (error) {
     return renderError(error);
   }
@@ -372,7 +372,7 @@ const fetchProduct = async (productId: string) => {
   const product = await prisma.product.findUnique({
     where: { id: productId },
   });
-  if (!product) throw new Error("Product not found");
+  if (!product) throw new Error("Produkt ikke funnet");
   return product;
 };
 
@@ -399,7 +399,7 @@ export const fetchOrCreateCart = async ({
   });
 
   if (!cart && errorOnFailure) {
-    throw new Error("Cart not found");
+    throw new Error("Handlekurv ikke funnet");
   }
 
   if (!cart) {
@@ -525,7 +525,7 @@ export const removeCartItemAction = async (
     });
     await updateCart(cart);
     revalidatePath("/cart");
-    return { message: "Item removed from cart" };
+    return { message: "Varen er fjernet fra handlekurven" };
   } catch (error) {
     return renderError(error);
   }
@@ -556,7 +556,7 @@ export const updateCartItemAction = async ({
     });
     await updateCart(cart);
     revalidatePath("/cart");
-    return { message: "cart updated" };
+    return { message: "Handlekurven er oppdatert" };
   } catch (error) {
     return renderError(error);
   }

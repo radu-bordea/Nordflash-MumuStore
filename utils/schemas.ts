@@ -4,15 +4,15 @@ export const productSchema = z.object({
   name: z
     .string()
     .min(2, {
-      message: "name must be at least 2 characters.",
+      message: "Navnet må være minst 2 tegn.",
     })
     .max(100, {
-      message: "name must be less than 100 characters.",
+      message: "Navnet må være mindre enn 100 tegn.",
     }),
   company: z.string(),
   featured: z.coerce.boolean(),
   price: z.coerce.number().int().min(0, {
-    message: "price must be a positive number.",
+    message: "Prisen må være et positivt tall.",
   }),
   description: z.string().refine(
     (description) => {
@@ -20,7 +20,7 @@ export const productSchema = z.object({
       return wordCount >= 10 && wordCount <= 1000;
     },
     {
-      message: "description must be between 10 and 1000 words.",
+      message: "Beskrivelsen må være mellom 10 og 1000 ord.",
     },
   ),
 });
@@ -47,31 +47,31 @@ function validateImageFile() {
     .instanceof(File)
     .refine((file) => {
       return !file || file.size <= maxUploadSize;
-    }, "File size must be less than 1MB")
+    }, "Filstørrelsen må være mindre enn 1 MB")
     .refine((file) => {
       return (
         !file || acceptedFileTypes.some((type) => file.type.startsWith(type))
       );
-    }, "File must be an image");
+    }, "Filen må være et bilde");
 }
 
 export const reviewSchema = z.object({
   productId: z.string().refine((value) => value !== '', {
-    message: 'Product ID cannot be empty',
+    message: "Produkt-ID kan ikke være tom",
   }),
   authorName: z.string().refine((value) => value !== '', {
-    message: 'Author name cannot be empty',
+    message: "Forfatternavn kan ikke være tomt",
   }),
   authorImageUrl: z.string().refine((value) => value !== '', {
-    message: 'Author image URL cannot be empty',
+    message: "URL til forfatterbilde kan ikke være tom",
   }),
   rating: z.coerce
     .number()
     .int()
-    .min(1, { message: 'Rating must be at least 1' })
-    .max(5, { message: 'Rating must be at most 5' }),
+    .min(1, { message: "Vurderingen må være minst 1" })
+    .max(5, { message: "Vurderingen kan være maks 5" }),
   comment: z
     .string()
-    .min(10, { message: 'Comment must be at least 10 characters long' })
-    .max(1000, { message: 'Comment must be at most 1000 characters long' }),
+    .min(10, { message: "Kommentaren må være minst 10 tegn lang" })
+    .max(1000, { message: "Kommentaren kan være maks 1000 tegn lang" }),
 });

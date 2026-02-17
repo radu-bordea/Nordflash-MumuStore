@@ -15,7 +15,7 @@ function ThirdColumn({ quantity, id }: { quantity: number; id: string }) {
 
   const handleAmountChange = async (value: number) => {
     setIsLoading(true);
-    toast.success("Calculating...");
+    toast.success("Beregning...");
     const result = await updateCartItemAction({
       amount: value,
       cartItemId:id,
@@ -35,7 +35,7 @@ function ThirdColumn({ quantity, id }: { quantity: number; id: string }) {
       />
       <FormContainer action={removeCartItemAction}>
         <input type='hidden' name='id' value={id} />
-        <SubmitButton size='sm' className='mt-4' text='remove' />
+        <SubmitButton size='sm' className='mt-4' text='fjern' />
       </FormContainer>
     </div>
   );

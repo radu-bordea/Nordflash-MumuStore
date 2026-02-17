@@ -22,14 +22,14 @@ async function ItemsPage() {
     <section>
       <Table>
         <TableCaption className="capitalize">
-          total products : {items.length}
+          totale produkter : {items.length}
         </TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead>Product Name</TableHead>
-            <TableHead>Company</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead>Actions</TableHead>
+            <TableHead>Produktnavn</TableHead>
+            <TableHead>Bedrift</TableHead>
+            <TableHead>Pris</TableHead>
+            <TableHead>Handlinger</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

@@ -11,15 +11,15 @@ function CartTotals({ cart }: { cart: Cart }) {
   return (
     <div>
       <Card className='p-8 '>
-        <CartTotalRow label='Subtotal' amount={cartTotal} />
-        <CartTotalRow label='Shipping' amount={shipping} />
-        <CartTotalRow label='Tax' amount={tax} />
+        <CartTotalRow label='Delsum' amount={cartTotal} />
+        <CartTotalRow label='Frakt' amount={shipping} />
+        <CartTotalRow label='Avgift' amount={tax} />
         <CardTitle className='mt-8'>
-          <CartTotalRow label='Order Total' amount={orderTotal} lastRow />
+          <CartTotalRow label='Totalt antall bestillinger' amount={orderTotal} lastRow />
         </CardTitle>
       </Card>
       <FormContainer action={createOrderAction}>
-        <SubmitButton text='Place Order' className='w-full mt-8' />
+        <SubmitButton text='Legg til bestilling' className='w-full mt-8' />
       </FormContainer>
     </div>
   );

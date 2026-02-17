@@ -4,18 +4,19 @@ type NavLink = {
 };
 
 export const links: NavLink[] = [
-  { href: "/", label: "home" },
-  { href: "/about", label: "about" },
-  { href: "/products", label: "products" },
-  { href: "/favorites", label: "favorites" },
-  { href: "/reviews", label: "reviews" },
-  { href: "/cart", label: "cart" },
-  { href: "/orders", label: "orders" },
-  { href: "/admin/sales", label: "dashboard" },
+  { href: "/", label: "hjem" },
+  { href: "/about", label: "om oss" },
+  { href: "/products", label: "produkter" },
+  { href: "/favorites", label: "favoritter" },
+  { href: "/reviews", label: "anmeldelser" },
+  { href: "/cart", label: "handlekurv" },
+  { href: "/orders", label: "bestillinger" },
+  { href: "/admin/sales", label: "dashbord" },
 ];
 
 export const adminLinks: NavLink[] = [
-  { href: "/admin/sales", label: "sales" },
-  { href: "/admin/products", label: "my products" },
-  { href: "/admin/products/create", label: "create product" },
+  { href: "/admin/sales", label: "salg" },
+  { href: "/admin/products", label: "mine produkter" },
+  { href: "/admin/products/create", label: "opprett produkt" },
 ];
+

@@ -16,15 +16,15 @@ async function SalesPage() {
   return (
     <div>
       <Table>
-        <TableCaption>Total orders : {orders.length}</TableCaption>
+        <TableCaption>Totalt antall bestillinger : {orders.length}</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead>Email</TableHead>
-            <TableHead>Products</TableHead>
-            <TableHead>Order Total</TableHead>
-            <TableHead>Tax</TableHead>
-            <TableHead>Shipping</TableHead>
-            <TableHead>Date</TableHead>
+            <TableHead>E-post</TableHead>
+            <TableHead>Produkter</TableHead>
+            <TableHead>Totalt antall bestillinger</TableHead>
+            <TableHead>Avgift</TableHead>
+            <TableHead>Frakt</TableHead>
+            <TableHead>Dato</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

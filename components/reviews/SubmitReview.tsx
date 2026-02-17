@@ -21,7 +21,7 @@ function SubmitReview({ productId }: { productId: string }) {
         className="capitalize mt-6"
         onClick={() => setIsReviewFormVisible((prev) => !prev)}
       >
-        leave review
+        legg igjen anmeldelse
       </Button>
       {isReviewFormVisible && (
         <Card className="p-8 mt-8">
@@ -33,11 +33,11 @@ function SubmitReview({ productId }: { productId: string }) {
               value={user?.firstName || "user"}
             />
             <input type="hidden" name="authorImageUrl" value={user?.imageUrl} />
-            <RatingInput name="rating" />
+            <RatingInput name="rating" labelText="vurdering"/>
             <TextAreaInput
               name="comment"
-              labelText="feedback"
-              defaultValue="Outstanding Product"
+              labelText="tilbakemelding"
+              defaultValue="Enestående produkt"
             ></TextAreaInput>
             <SubmitButton className="mt-4" />
           </FormContainer>
