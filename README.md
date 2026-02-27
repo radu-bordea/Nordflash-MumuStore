@@ -20,6 +20,7 @@
 - npm install zod
 - npm install @supabase/supabase-js
 - npm i react-share
+- npm install embla-carousel-autoplay
 
 # prisma
 - npm install prisma tsx @types/pg --save-dev
