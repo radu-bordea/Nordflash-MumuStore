@@ -14,6 +14,12 @@ export const productSchema = z.object({
   price: z.coerce.number().int().min(0, {
     message: "Prisen må være et positivt tall.",
   }),
+
+  // ✅ STOCK FIELD ADDED
+  stock: z.coerce.number().int().min(0, {
+    message: "Lagerbeholdning må være 0 eller mer.",
+  }),
+
   description: z.string().refine(
     (description) => {
       const wordCount = description.split(" ").length;
@@ -56,13 +62,13 @@ function validateImageFile() {
 }
 
 export const reviewSchema = z.object({
-  productId: z.string().refine((value) => value !== '', {
+  productId: z.string().refine((value) => value !== "", {
     message: "Produkt-ID kan ikke være tom",
   }),
-  authorName: z.string().refine((value) => value !== '', {
+  authorName: z.string().refine((value) => value !== "", {
     message: "Forfatternavn kan ikke være tomt",
   }),
-  authorImageUrl: z.string().refine((value) => value !== '', {
+  authorImageUrl: z.string().refine((value) => value !== "", {
     message: "URL til forfatterbilde kan ikke være tom",
   }),
   rating: z.coerce

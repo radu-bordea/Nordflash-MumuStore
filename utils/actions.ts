@@ -167,6 +167,7 @@ export const updateProductAction = async (
     return renderError(error);
   }
 };
+
 export const updateProductImageAction = async (
   prevState: unknown,
   formData: FormData,
@@ -329,6 +330,7 @@ export const fetchProductReviewsByUser = async () => {
   });
   return reviews;
 };
+
 export const deleteReviewAction = async (prevState: { reviewId: string }) => {
   const { reviewId } = prevState;
   const user = await getAuthUser();
@@ -423,19 +425,36 @@ const updateOrCreateCartItem = async ({
   cartId: string;
   amount: number;
 }) => {
+  const product = await prisma.product.findUnique({
+    where: { id: productId },
+  });
+
+  if (!product) throw new Error("Produkt ikke funnet");
+
   let cartItem = await prisma.cartItem.findFirst({
     where: {
       productId,
       cartId,
     },
   });
+
+  if (amount <= 0) {
+    throw new Error("Ugyldig antall");
+  }
+
+  const newAmount = cartItem ? cartItem.amount + amount : amount;
+
+  if (newAmount > product.stock) {
+    throw new Error("Ikke nok varer på lager");
+  }
+
   if (cartItem) {
     cartItem = await prisma.cartItem.update({
       where: {
         id: cartItem.id,
       },
       data: {
-        amount: cartItem.amount + amount,
+        amount: newAmount,
       },
     });
   } else {
@@ -545,17 +564,33 @@ export const updateCartItemAction = async ({
       userId: user.id,
       errorOnFailure: true,
     });
-    await prisma.cartItem.update({
+
+    const cartItem = await prisma.cartItem.findFirst({
       where: {
         id: cartItemId,
         cartId: cart.id,
+      },
+      include: { product: true },
+    });
+
+    if (!cartItem) throw new Error("Cart item not found");
+
+    if (amount > cartItem.product.stock) {
+      throw new Error("Ikke nok varer på lager");
+    }
+
+    await prisma.cartItem.update({
+      where: {
+        id: cartItemId,
       },
       data: {
         amount,
       },
     });
+
     await updateCart(cart);
     revalidatePath("/cart");
+
     return { message: "Handlekurven er oppdatert" };
   } catch (error) {
     return renderError(error);
@@ -567,12 +602,39 @@ export const createOrderAction = async (
   formData: FormData,
 ) => {
   const user = await getAuthUser();
+
   try {
     const cart = await fetchOrCreateCart({
       userId: user.id,
       errorOnFailure: true,
     });
-    const order = await prisma.order.create({
+
+    const cartItems = await prisma.cartItem.findMany({
+      where: { cartId: cart.id },
+      include: { product: true },
+    });
+
+    // ✅ Check stock first
+    for (const item of cartItems) {
+      if (item.amount > item.product.stock) {
+        throw new Error(`Produkt ${item.product.name} er utsolgt`);
+      }
+    }
+
+    // ✅ Reduce stock
+    for (const item of cartItems) {
+      await prisma.product.update({
+        where: { id: item.productId },
+        data: {
+          stock: {
+            decrement: item.amount,
+          },
+        },
+      });
+    }
+
+    // ✅ Create order
+    await prisma.order.create({
       data: {
         clerkId: user.id,
         products: cart.numItemsInCart,
@@ -582,6 +644,8 @@ export const createOrderAction = async (
         email: user.emailAddresses[0].emailAddress,
       },
     });
+
+    // ✅ Delete cart
     await prisma.cart.delete({
       where: {
         id: cart.id,
@@ -590,6 +654,7 @@ export const createOrderAction = async (
   } catch (error) {
     return renderError(error);
   }
+
   redirect("/orders");
 };
 
@@ -606,6 +671,7 @@ export const fetchUserOrders = async () => {
   });
   return orders;
 };
+
 export const fetchAdminOrders = async () => {
   const user = await getAdminUser();
   const orders = await prisma.order.findMany({
@@ -618,4 +684,3 @@ export const fetchAdminOrders = async () => {
   });
   return orders;
 };
-
