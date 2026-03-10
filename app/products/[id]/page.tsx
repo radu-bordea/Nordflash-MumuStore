@@ -15,14 +15,12 @@ async function SingleProductPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  console.log("DEBUG params:", params);
-
   const { id } = await params;
 
   const product = await fetchSingleProduct(id);
-  console.log(product);
 
-  const { name, image, company, description, price } = product;
+  const { name, image, company, description, price, stock } = product;
+
   const dollarsAmount = formatCurrency(price);
 
   const { userId } = await auth();
@@ -32,8 +30,10 @@ async function SingleProductPage({
   return (
     <section>
       <BreadCrumbs name={product.name} />
+
       <div className="mt-6 grid gap-y-8 lg:grid-cols-2 lg:gap-x-16">
-        {/* IMAGE FIRST COL */}
+
+        {/* IMAGE */}
         <div className="relative h-90">
           <Image
             src={image}
@@ -45,27 +45,67 @@ async function SingleProductPage({
           />
         </div>
 
-        {/* PRODUCT INFO SECOND COL */}
+        {/* PRODUCT INFO */}
         <div>
           <div className="flex gap-x-8 items-center">
             <h1 className="capitalize text-3xl font-bold">{name}</h1>
+
             <div className="flex items-center gap-x-2">
               <FavoriteToggleButton productId={id} />
               <ShareButton name={product.name} productId={id} />
             </div>
           </div>
+
           <ProductRating productId={id} />
+
           <h4 className="text-xl mt-2">{company}</h4>
+
           <p className="mt-3 text-md bg-muted inline-block p-2 rounded-md">
             {dollarsAmount}
           </p>
-          <p className="mt-6 leading-8 text-muted-foreground">{description}</p>
-          <AddToCart productId={id} />
+
+          {/* STOCK STATUS */}
+          <p className="mt-2 text-sm">
+            {stock > 0 ? (
+              <span className="text-green-600 font-medium">
+                In stock ({stock} available)
+              </span>
+            ) : (
+              <span className="text-red-600 font-medium">
+                Out of stock
+              </span>
+            )}
+          </p>
+
+          {stock > 0 && stock <= 5 && (
+            <p className="text-orange-500 text-sm">
+              Only {stock} left in stock
+            </p>
+          )}
+
+          <p className="mt-6 leading-8 text-muted-foreground">
+            {description}
+          </p>
+
+          {/* ADD TO CART */}
+          {stock > 0 ? (
+            <AddToCart productId={id} stock={stock}/>
+          ) : (
+            <button
+              disabled
+              className="mt-6 bg-gray-400 text-white px-4 py-2 rounded-md cursor-not-allowed"
+            >
+              Out of Stock
+            </button>
+          )}
         </div>
       </div>
+
       <ProductReviews productId={id} />
+
       {existingReview && <SubmitReview productId={id} />}
     </section>
   );
 }
+
 export default SingleProductPage;

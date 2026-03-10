@@ -3,10 +3,47 @@ import CheckboxInput from "@/components/form/CheckboxInput";
 import FormContainer from "@/components/form/FormContainer";
 import FormInput from "@/components/form/FormInput";
 import ImageInput from "@/components/form/ImageInput";
-import PriceInput from "@/components/form/PriceInput";
 import TextAreaInput from "@/components/form/TextAreaInput";
 import { createProductAction } from "@/utils/actions";
 import { faker } from "@faker-js/faker";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+
+type FormInputNumberProps = {
+  defaultValue?: number;
+  name: string;
+  label: string;
+  min?: number;
+};
+
+// Reusable Number Input Component
+function NumberInput({ defaultValue, name, label, min = 0 }: FormInputNumberProps) {
+  return (
+    <div className="mb-2">
+      <Label htmlFor={name} className="capitalize mb-2">
+        {label}
+      </Label>
+      <Input
+        id={name}
+        type="number"
+        name={name}
+        min={min}
+        defaultValue={defaultValue ?? min}
+        required
+      />
+    </div>
+  );
+}
+
+// Optional PriceInput wrapper (can reuse NumberInput)
+function PriceInput({ defaultValue }: { defaultValue?: number }) {
+  return <NumberInput name="price" label="Pris ($)" defaultValue={defaultValue ?? 100} min={0} />;
+}
+
+// Optional StockInput wrapper
+function StockInput({ defaultValue }: { defaultValue?: number }) {
+  return <NumberInput name="stock" label="Lagerbeholdning" defaultValue={defaultValue ?? 0} min={0} />;
+}
 
 const CreateProductPage = () => {
   const name = faker.commerce.product();
@@ -31,7 +68,8 @@ const CreateProductPage = () => {
               label="bedrift"
               defaultValue={company}
             />
-            <PriceInput />
+            <PriceInput defaultValue={100} />
+            <StockInput defaultValue={0} />
             <ImageInput />
           </div>
           <TextAreaInput
@@ -48,4 +86,5 @@ const CreateProductPage = () => {
     </section>
   );
 };
+
 export default CreateProductPage;

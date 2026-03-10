@@ -1,7 +1,6 @@
 import EmptyList from "@/components/global/EmptyList";
 import { deleteProductAction, fetchAdminProducts } from "@/utils/actions";
 import Link from "next/link";
-
 import { formatCurrency } from "@/utils/format";
 import {
   Table,
@@ -18,23 +17,28 @@ import FormContainer from "@/components/form/FormContainer";
 async function ItemsPage() {
   const items = await fetchAdminProducts();
   if (items.length === 0) return <EmptyList />;
+
   return (
     <section>
       <Table>
         <TableCaption className="capitalize">
           totale produkter : {items.length}
         </TableCaption>
+
         <TableHeader>
           <TableRow>
             <TableHead>Produktnavn</TableHead>
             <TableHead>Bedrift</TableHead>
             <TableHead>Pris</TableHead>
+            <TableHead>Lager</TableHead>
             <TableHead>Handlinger</TableHead>
           </TableRow>
         </TableHeader>
+
         <TableBody>
           {items.map((item) => {
-            const { id: productId, name, company, price } = item;
+            const { id: productId, name, company, price, stock } = item;
+
             return (
               <TableRow key={productId}>
                 <TableCell>
@@ -45,14 +49,31 @@ async function ItemsPage() {
                     {name}
                   </Link>
                 </TableCell>
+
                 <TableCell>{company}</TableCell>
+
                 <TableCell>{formatCurrency(price)}</TableCell>
 
-                <TableCell className="flex items-center gap-x-2">
-                  <Link href={`/admin/products/${productId}/edit`}>
-                    <IconButton actionType="edit" />
-                  </Link>
-                  <DeleteProduct productId={productId} />
+                <TableCell
+                  className={`font-semibold ${
+                    stock === 0
+                      ? "text-red-600"
+                      : stock <= 5
+                      ? "text-yellow-600"
+                      : "text-green-600"
+                  }`}
+                >
+                  {stock}
+                </TableCell>
+
+                <TableCell>
+                  <div className="flex items-center gap-x-2">
+                    <Link href={`/admin/products/${productId}/edit`}>
+                      <IconButton actionType="edit" />
+                    </Link>
+
+                    <DeleteProduct productId={productId} />
+                  </div>
                 </TableCell>
               </TableRow>
             );
@@ -65,9 +86,10 @@ async function ItemsPage() {
 
 function DeleteProduct({ productId }: { productId: string }) {
   const deleteProduct = deleteProductAction.bind(null, { productId });
+
   return (
     <FormContainer action={deleteProduct}>
-      <IconButton actionType="delete"/>
+      <IconButton actionType="delete" />
     </FormContainer>
   );
 }

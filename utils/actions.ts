@@ -431,16 +431,16 @@ const updateOrCreateCartItem = async ({
 
   if (!product) throw new Error("Produkt ikke funnet");
 
-  let cartItem = await prisma.cartItem.findFirst({
+  if (amount <= 0) {
+    throw new Error("Ugyldig antall");
+  }
+
+  const cartItem = await prisma.cartItem.findFirst({
     where: {
       productId,
       cartId,
     },
   });
-
-  if (amount <= 0) {
-    throw new Error("Ugyldig antall");
-  }
 
   const newAmount = cartItem ? cartItem.amount + amount : amount;
 
@@ -449,16 +449,12 @@ const updateOrCreateCartItem = async ({
   }
 
   if (cartItem) {
-    cartItem = await prisma.cartItem.update({
-      where: {
-        id: cartItem.id,
-      },
-      data: {
-        amount: newAmount,
-      },
+    await prisma.cartItem.update({
+      where: { id: cartItem.id },
+      data: { amount: newAmount },
     });
   } else {
-    cartItem = await prisma.cartItem.create({
+    await prisma.cartItem.create({
       data: {
         amount,
         productId,
@@ -505,23 +501,31 @@ export const updateCart = async (cart: Cart) => {
 };
 
 export const addToCartAction = async (
-  prevSTate: unknown,
-  formData: FormData,
+  prevState: unknown,
+  formData: FormData
 ) => {
   const user = await getAuthUser();
+
   try {
     const productId = formData.get("productId") as string;
     const amount = Number(formData.get("amount"));
-    await fetchProduct(productId);
+
     const cart = await fetchOrCreateCart({ userId: user.id });
-    await updateOrCreateCartItem({ productId, amount, cartId: cart.id });
+
+    await updateOrCreateCartItem({
+      productId,
+      amount,
+      cartId: cart.id,
+    });
+
     await updateCart(cart);
 
-    // ✅ This fixes the navbar cart count
+    // refresh navbar cart icon
     revalidatePath("/", "layout");
   } catch (error) {
     renderError(error);
   }
+
   redirect("/cart");
 };
 

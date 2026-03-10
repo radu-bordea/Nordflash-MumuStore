@@ -13,8 +13,9 @@ export default function CartItemsList({
   return (
     <div>
       {cartItems.map((cartItem) => {
-        const { id, amount } = cartItem;
-        const { image, name, company, price, id: productId } = cartItem.product;
+        const { id, amount, product } = cartItem;
+        const { image, name, company, price, stock, id: productId } = product;
+
         return (
           <Card
             key={id}
@@ -22,7 +23,7 @@ export default function CartItemsList({
           >
             <FirstColumn image={image} name={name} />
             <SecondColumn name={name} company={company} productId={productId} />
-            <ThirdColumn id={id} quantity={amount} />
+            <ThirdColumn id={id} quantity={amount} maxAmount={stock} />
             <FourthColumn price={price} />
           </Card>
         );
