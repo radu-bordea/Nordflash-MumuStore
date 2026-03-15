@@ -502,7 +502,7 @@ export const updateCart = async (cart: Cart) => {
 
 export const addToCartAction = async (
   prevState: unknown,
-  formData: FormData
+  formData: FormData,
 ) => {
   const user = await getAuthUser();
 
@@ -601,11 +601,14 @@ export const updateCartItemAction = async ({
   }
 };
 
+// THIS MUST BE CHECKED ---!!!---
 export const createOrderAction = async (
   prevState: unknown,
   formData: FormData,
 ) => {
   const user = await getAuthUser();
+  let orderId: null | string = null;
+  let cartId: null | string = null;
 
   try {
     const cart = await fetchOrCreateCart({
@@ -613,10 +616,19 @@ export const createOrderAction = async (
       errorOnFailure: true,
     });
 
+    cartId = cart.id
+
     const cartItems = await prisma.cartItem.findMany({
       where: { cartId: cart.id },
       include: { product: true },
     });
+
+    await prisma.order.deleteMany({
+      where: {
+        clerkId: user.id,
+        isPaid:false
+      }
+    })
 
     // ✅ Check stock first
     for (const item of cartItems) {
@@ -638,7 +650,7 @@ export const createOrderAction = async (
     }
 
     // ✅ Create order
-    await prisma.order.create({
+    const order = await prisma.order.create({
       data: {
         clerkId: user.id,
         products: cart.numItemsInCart,
@@ -649,17 +661,12 @@ export const createOrderAction = async (
       },
     });
 
-    // ✅ Delete cart
-    await prisma.cart.delete({
-      where: {
-        id: cart.id,
-      },
-    });
+    orderId = order.id
   } catch (error) {
     return renderError(error);
   }
 
-  redirect("/orders");
+  redirect(`/checkout?orderId=${orderId}&cartId=${cartId}`);
 };
 
 export const fetchUserOrders = async () => {
