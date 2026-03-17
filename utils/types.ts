@@ -11,6 +11,12 @@ export type actionFunction = (
   formData: FormData,
 ) => Promise<{ message: string }>;
 
+// For actions that redirect instead of returning a message
+export type redirectActionFunction = (
+  prevState: unknown,
+  formData: FormData,
+) => Promise<{ message: string } | void>;
+
 export type CartItem = {
   productId: string;
   image: string;
@@ -25,6 +31,6 @@ export type CartState = {
   numItemsInCart: number;
   cartTotal: number;
   shipping: number;
-  tax: number;
+  tax: true;
   orderTotal: number;
 };

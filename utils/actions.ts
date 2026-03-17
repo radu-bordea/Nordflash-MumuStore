@@ -603,8 +603,8 @@ export const updateCartItemAction = async ({
 
 // THIS MUST BE CHECKED ---!!!---
 export const createOrderAction = async (
-  prevState: unknown,
-  formData: FormData,
+  _prevState: unknown,
+  _formData: FormData,
 ) => {
   const user = await getAuthUser();
   let orderId: null | string = null;
@@ -615,41 +615,30 @@ export const createOrderAction = async (
       userId: user.id,
       errorOnFailure: true,
     });
-
-    cartId = cart.id
+    cartId = cart.id;
+    console.log("✅ Cart found:", cartId);
 
     const cartItems = await prisma.cartItem.findMany({
       where: { cartId: cart.id },
       include: { product: true },
     });
 
-    await prisma.order.deleteMany({
-      where: {
-        clerkId: user.id,
-        isPaid:false
-      }
-    })
+    console.log("✅ Cart items count:", cartItems.length);
 
-    // ✅ Check stock first
+    if (cartItems.length === 0) {
+      throw new Error("Cart is empty");
+    }
+
     for (const item of cartItems) {
       if (item.amount > item.product.stock) {
         throw new Error(`Produkt ${item.product.name} er utsolgt`);
       }
     }
 
-    // ✅ Reduce stock
-    for (const item of cartItems) {
-      await prisma.product.update({
-        where: { id: item.productId },
-        data: {
-          stock: {
-            decrement: item.amount,
-          },
-        },
-      });
-    }
+    await prisma.order.deleteMany({
+      where: { clerkId: user.id, isPaid: false },
+    });
 
-    // ✅ Create order
     const order = await prisma.order.create({
       data: {
         clerkId: user.id,
@@ -658,11 +647,14 @@ export const createOrderAction = async (
         tax: cart.tax,
         shipping: cart.shipping,
         email: user.emailAddresses[0].emailAddress,
+        isPaid: false, // ← explicitly set, never rely on DB default
       },
     });
 
-    orderId = order.id
+    orderId = order.id;
+    console.log("✅ Order created:", orderId, "isPaid:", order.isPaid);
   } catch (error) {
+    console.log("❌ createOrderAction error:", error);
     return renderError(error);
   }
 
