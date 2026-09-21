@@ -30,8 +30,8 @@ function NavSearch() {
   return (
     <Input
       type="search"
-      placeholder="Search product..."
-      className="max-w-xs dark:bg-muted"
+      placeholder="Søk etter produkter..."
+      className="w-full rounded-md border-nav-foreground/20 bg-nav-foreground/15 text-nav-foreground caret-nav-foreground placeholder:text-nav-foreground/70 focus-visible:border-gold/70 focus-visible:bg-nav-foreground/20 focus-visible:ring-gold/30 dark:bg-nav-foreground/10 dark:focus-visible:bg-nav-foreground/15"
       value={search}
       onChange={(e) => {
         setSearch(e.target.value);

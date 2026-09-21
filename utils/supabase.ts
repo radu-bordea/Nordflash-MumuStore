@@ -2,19 +2,30 @@ import { createClient } from "@supabase/supabase-js";
 
 const bucket = "main-bucket";
 
-// Create a single supabase client for interacting with your database
 export const supabase = createClient(
   process.env.SUPABASE_URL as string,
   process.env.SUPABASE_KEY as string,
 );
 
 export const uploadImage = async (image: File) => {
-  const timestamp = Date.now();
-  const newName = `${timestamp}-${image.name}`;
-  const { data } = await supabase.storage
+  // Safe file name: no spaces or special characters like æøå
+  const safeName = image.name
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9._-]+/g, "-")
+    .replace(/-+/g, "-");
+
+  const newName = `${Date.now()}-${safeName}`;
+
+  const { data, error } = await supabase.storage
     .from(bucket)
     .upload(newName, image, { cacheControl: "3600" });
-  if (!data) throw new Error("Bildeopplasting mislyktes");
+
+  if (error || !data) {
+    console.error("Supabase upload error:", error);
+    throw new Error(error?.message || "Bildeopplasting mislyktes");
+  }
+
   return supabase.storage.from(bucket).getPublicUrl(newName).data.publicUrl;
 };
 

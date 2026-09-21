@@ -42,9 +42,8 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="w-full min-h-[52vh] flex items-center">
+    <section className="w-full min-h-[52vh] flex items-center rounded-2xl border border-border bg-linear-to-br from-background via-background to-secondary py-8 shadow-sm">
       <div className="max-w-7xl mx-auto w-full px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        
         {/* LEFT SIDE */}
         <div className="relative min-h-65 flex flex-col justify-center">
           {slides.map((slide, index) => (
@@ -54,9 +53,11 @@ export default function Hero() {
                 index === current ? "opacity-100" : "opacity-0 pointer-events-none"
               }`}
             >
-              <h1 className="text-3xl sm:text-5xl font-bold tracking-tight">
+              <h1 className="text-4xl sm:text-6xl font-semibold leading-[1.05] tracking-tight text-foreground">
                 {slide.title}
               </h1>
+
+              <span className="mt-4 block h-0.5 w-16 rounded-full bg-gold" />
 
               <p className="mt-6 text-lg text-muted-foreground max-w-md">
                 {slide.description}
@@ -65,7 +66,7 @@ export default function Hero() {
               <Button
                 asChild
                 size="lg"
-                className="mt-8 rounded-xl px-8"
+                className="mt-8 rounded-md px-8 uppercase tracking-wider shadow-sm"
               >
                 <Link href="/products">Våre produkter</Link>
               </Button>
@@ -86,13 +87,12 @@ export default function Hero() {
                 src={slide.image}
                 alt={slide.title}
                 fill
-                className="object-cover rounded-3xl shadow-xl"
+                className="object-cover rounded-2xl shadow-lg ring-1 ring-border"
                 priority
               />
             </div>
           ))}
         </div>
-
       </div>
     </section>
   );

@@ -32,6 +32,7 @@ export function DarkMode() {
       onClick={toggleTheme}
       aria-label="Toggle theme"
       title="Toggle theme"
+      className="border-nav-foreground/30 bg-transparent text-nav-foreground hover:bg-nav-foreground/10 hover:text-nav-foreground dark:border-nav-foreground/30 dark:bg-transparent dark:hover:bg-nav-foreground/10"
     >
       <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
       <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />

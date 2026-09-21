@@ -15,7 +15,6 @@ export const productSchema = z.object({
     message: "Prisen må være et positivt tall.",
   }),
 
-  // ✅ STOCK FIELD ADDED
   stock: z.coerce.number().int().min(0, {
     message: "Lagerbeholdning må være 0 eller mer.",
   }),
@@ -47,18 +46,16 @@ export const imageSchema = z.object({
 });
 
 function validateImageFile() {
+  // Safety net. The browser compresses images to about 700 KB before upload.
   const maxUploadSize = 1024 * 1024;
-  const acceptedFileTypes = ["image/"];
+  const acceptedFileTypes = ["image/jpeg", "image/png", "image/webp"];
   return z
     .instanceof(File)
-    .refine((file) => {
-      return !file || file.size <= maxUploadSize;
-    }, "Filstørrelsen må være mindre enn 1 MB")
-    .refine((file) => {
-      return (
-        !file || acceptedFileTypes.some((type) => file.type.startsWith(type))
-      );
-    }, "Filen må være et bilde");
+    .refine((file) => file.size <= maxUploadSize, "Filstørrelsen må være mindre enn 1 MB")
+    .refine(
+      (file) => acceptedFileTypes.includes(file.type),
+      "Bildet må være JPG, PNG eller WebP",
+    );
 }
 
 export const reviewSchema = z.object({

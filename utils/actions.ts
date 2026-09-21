@@ -12,8 +12,13 @@ import { deleteImage, uploadImage } from "./supabase";
 import { revalidatePath } from "next/cache";
 import { Cart } from "@/app/generated/prisma/client";
 
+
+
 console.log("PRISMA INSTANCE:", prisma);
 console.log("PRISMA MODELS:", prisma && Object.keys(prisma));
+
+const VAT_RATE = 0.25; // Norwegian MVA. Shop prices already include it.
+const round2 = (n: number) => Math.round(n * 100) / 100;
 
 const getAuthUser = async () => {
   const user = await currentUser();
@@ -466,12 +471,8 @@ const updateOrCreateCartItem = async ({
 
 export const updateCart = async (cart: Cart) => {
   const cartItems = await prisma.cartItem.findMany({
-    where: {
-      cartId: cart.id,
-    },
-    include: {
-      product: true, // include the related product
-    },
+    where: { cartId: cart.id },
+    include: { product: true },
     orderBy: { createdAt: "asc" },
   });
   let numItemsInCart = 0;
@@ -481,17 +482,18 @@ export const updateCart = async (cart: Cart) => {
     numItemsInCart += item.amount;
     cartTotal += item.amount * item.product.price;
   }
-  const tax = cart.taxRate * cartTotal;
+
   const shipping = cartTotal ? cart.shipping : 0;
-  const orderTotal = cartTotal + tax + shipping;
+  // Prices already include MVA, so nothing is added on top.
+  const orderTotal = round2(cartTotal + shipping);
+  // "Herav MVA": the VAT contained in the total (informational only)
+  const tax = round2((orderTotal * VAT_RATE) / (1 + VAT_RATE));
 
   const currentCart = await prisma.cart.update({
-    where: {
-      id: cart.id,
-    },
+    where: { id: cart.id },
     data: {
       numItemsInCart,
-      cartTotal,
+      cartTotal: round2(cartTotal),
       tax,
       orderTotal,
     },

@@ -23,6 +23,7 @@
 - npm install embla-carousel-autoplay
 - npm install --save @stripe/react-stripe-js @stripe/stripe-js stripe axios
 (read: https://docs.stripe.com/checkout/embedded/quickstart)
+- npm install browser-image-compression
 
 # prisma
 - npm install prisma tsx @types/pg --save-dev

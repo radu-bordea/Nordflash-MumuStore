@@ -1,5 +1,5 @@
-import { Label } from "../ui/label";
 import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 
 type FormInputProps = {
   name: string;
@@ -10,15 +10,15 @@ type FormInputProps = {
 };
 
 function FormInput({
+  label,
   name,
   type,
-  label,
   defaultValue,
   placeholder,
 }: FormInputProps) {
   return (
     <div className="mb-2">
-      <Label htmlFor={name} className="mb-2 capitalize">
+      <Label htmlFor={name} className="capitalize">
         {label || name}
       </Label>
       <Input

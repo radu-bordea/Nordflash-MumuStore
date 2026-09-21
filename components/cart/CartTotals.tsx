@@ -4,9 +4,6 @@ import { formatCurrency } from '@/utils/format';
 import { createOrderAction } from '@/utils/actions';
 import { SubmitButton } from '../form/Buttons';
 import { Cart } from '@/app/generated/prisma/client';
-import { redirectActionFunction } from '@/utils/types';
-
-
 
 function CartTotals({ cart }: { cart: Cart }) {
   const { cartTotal, shipping, tax, orderTotal } = cart;
@@ -16,13 +13,17 @@ function CartTotals({ cart }: { cart: Cart }) {
       <Card className='p-8'>
         <CartTotalRow label='Delsum' amount={cartTotal} />
         <CartTotalRow label='Frakt' amount={shipping} />
-        <CartTotalRow label='Avgift' amount={tax} />
         <CardTitle className='mt-8'>
-          <CartTotalRow label='Totalt antall bestillinger' amount={orderTotal} lastRow />
+          <CartTotalRow label='Totalt å betale' amount={orderTotal} lastRow />
         </CardTitle>
+        {/* Informational only: the VAT already contained in the total */}
+        <p className='mt-2 flex justify-between text-xs text-muted-foreground'>
+          <span>Herav MVA (25%)</span>
+          <span>{formatCurrency(tax)}</span>
+        </p>
       </Card>
       <form action={createOrderAction as any}>
-        <SubmitButton text='Legg til bestilling' className='w-full mt-8' />
+        <SubmitButton text='Gå til betaling' className='w-full mt-8' />
       </form>
     </div>
   );
