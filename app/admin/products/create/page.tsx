@@ -37,7 +37,7 @@ function NumberInput({ defaultValue, name, label, min = 0 }: FormInputNumberProp
 
 // Optional PriceInput wrapper (can reuse NumberInput)
 function PriceInput({ defaultValue }: { defaultValue?: number }) {
-  return <NumberInput name="price" label="Pris ($)" defaultValue={defaultValue ?? 100} min={0} />;
+  return <NumberInput name="price" label="Pris (NOK)" defaultValue={defaultValue ?? 100} min={0} />;
 }
 
 // Optional StockInput wrapper
