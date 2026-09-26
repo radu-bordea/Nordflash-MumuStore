@@ -19,9 +19,13 @@ async function SingleProductPage({
 
   const product = await fetchSingleProduct(id);
 
-  const { name, image, company, description, price, stock } = product;
+  const { name, image, company, description, price, stock, allowPreorder, preorderNote } =
+    product;
 
   const dollarsAmount = formatCurrency(price);
+
+  const isSoldOut = stock === 0 && !allowPreorder;
+  const isPreorderable = stock === 0 && allowPreorder;
 
   const { userId } = await auth();
   const existingReview =
@@ -66,20 +70,25 @@ async function SingleProductPage({
 
           {/* STOCK STATUS */}
           <p className="mt-2 text-sm">
-            {stock > 0 ? (
-              <span className="text-green-600 font-medium">
-                In stock ({stock} available)
-              </span>
+            {isSoldOut ? (
+              <span className="text-destructive font-medium">Utsolgt</span>
+            ) : isPreorderable ? (
+              <span className="text-gold font-medium">Kan forhåndsbestilles</span>
             ) : (
-              <span className="text-red-600 font-medium">
-                Out of stock
+              <span className="text-success font-medium">
+                På lager ({stock} tilgjengelig)
               </span>
             )}
           </p>
 
-          {stock > 0 && stock <= 5 && (
-            <p className="text-orange-500 text-sm">
-              Only {stock} left in stock
+          {!isSoldOut && !isPreorderable && stock > 0 && stock <= 5 && (
+            <p className="text-warning text-sm">Kun {stock} igjen på lager</p>
+          )}
+
+          {/* PREORDER NOTE */}
+          {isPreorderable && preorderNote && (
+            <p className="mt-2 rounded-md bg-accent p-3 text-sm text-accent-foreground">
+              {preorderNote}
             </p>
           )}
 
@@ -88,15 +97,19 @@ async function SingleProductPage({
           </p>
 
           {/* ADD TO CART */}
-          {stock > 0 ? (
-            <AddToCart productId={id} stock={stock}/>
-          ) : (
+          {isSoldOut ? (
             <button
               disabled
-              className="mt-6 bg-gray-400 text-white px-4 py-2 rounded-md cursor-not-allowed"
+              className="mt-6 cursor-not-allowed rounded-md bg-muted px-4 py-2 text-muted-foreground"
             >
-              Out of Stock
+              Utsolgt
             </button>
+          ) : (
+            <AddToCart
+              productId={id}
+              stock={stock}
+              isPreorder={isPreorderable}
+            />
           )}
         </div>
       </div>

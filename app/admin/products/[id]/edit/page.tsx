@@ -42,7 +42,7 @@ function NumberInput({ name, label, defaultValue, min = 0 }: NumberInputProps) {
 
 // Optional wrappers for Price and Stock
 function PriceInput({ defaultValue }: { defaultValue?: number }) {
-  return <NumberInput name="price" label="Pris ($)" defaultValue={defaultValue ?? 100} min={0} />;
+  return <NumberInput name="price" label="Pris (NOK)" defaultValue={defaultValue ?? 100} min={0} />;
 }
 function StockInput({ defaultValue }: { defaultValue?: number }) {
   return <NumberInput name="stock" label="Lagerbeholdning" defaultValue={defaultValue ?? 0} min={0} />;
@@ -61,7 +61,16 @@ async function resolveParams(params: Params) {
 async function EditProductPage({ params }: { params: Params }) {
   const id = await resolveParams(params);
   const product = await fetchAdminProductDetails(id);
-  const { name, company, description, featured, price, stock } = product;
+  const {
+    name,
+    company,
+    description,
+    featured,
+    price,
+    stock,
+    allowPreorder,
+    preorderNote,
+  } = product;
 
   return (
     <section>
@@ -104,11 +113,26 @@ async function EditProductPage({ params }: { params: Params }) {
             labelText="produktbeskrivelse"
             defaultValue={description}
           />
-          <div className="mt-6">
+          <div className="mt-6 space-y-4">
             <CheckboxInput
               name="featured"
               label="fremhevet"
               defaultChecked={featured}
+            />
+            <CheckboxInput
+              name="allowPreorder"
+              label="tillat forhåndsbestilling"
+              defaultChecked={allowPreorder}
+            />
+          </div>
+          <div className="mt-4">
+            <FormInput
+              type="text"
+              name="preorderNote"
+              label="Forhåndsbestillingsinfo (valgfritt)"
+              defaultValue={preorderNote ?? ""}
+              placeholder="F.eks. Forventet på lager om 2 uker"
+            required={false}
             />
           </div>
           <SubmitButton text="oppdater produktet" className="mt-8" />

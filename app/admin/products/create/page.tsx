@@ -77,8 +77,17 @@ const CreateProductPage = () => {
             labelText="produktbeskrivelse"
             defaultValue={description}
           />
-          <div className="mt-6">
+          <div className="mt-6 space-y-4">
             <CheckboxInput name="featured" label="fremhevet" />
+            <CheckboxInput name="allowPreorder" label="tillat forhåndsbestilling" />
+          </div>
+          <div className="mt-4">
+            <FormInput
+              type="text"
+              name="preorderNote"
+              label="Forhåndsbestillingsinfo (valgfritt)"
+              placeholder="F.eks. Forventet på lager om 2 uker"
+            />
           </div>
           <SubmitButton text="lage produkt" className="mt-8" />
         </FormContainer>

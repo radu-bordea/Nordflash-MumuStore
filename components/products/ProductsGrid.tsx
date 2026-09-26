@@ -9,16 +9,18 @@ function ProductsGrid({ products }: { products: Product[] }) {
   return (
     <div className="pt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {products.map((product) => {
-        const { name, price, image, stock } = product;
+        const { name, price, image, stock, allowPreorder } = product;
         const productId = product.id;
         const dollarsAmount = formatCurrency(price);
+        const isSoldOut = stock === 0 && !allowPreorder;
+        const isPreorderable = stock === 0 && allowPreorder;
 
         return (
           <article key={productId} className="group relative">
-            <Link href={stock === 0 ? "#" : `/products/${productId}`}>
+            <Link href={isSoldOut ? "#" : `/products/${productId}`}>
               <Card
                 className={`transform bg-card border-border group-hover:border-gold/60 group-hover:shadow-xl group-hover:shadow-primary/10 transition-all duration-500 relative ${
-                  stock === 0 ? "opacity-50 pointer-events-none" : ""
+                  isSoldOut ? "opacity-50 pointer-events-none" : ""
                 }`}
               >
                 <CardContent className="p-4">
@@ -39,9 +41,10 @@ function ProductsGrid({ products }: { products: Product[] }) {
                     </h2>
                     <p className="text-primary font-medium mt-2">{dollarsAmount}</p>
 
-                    {/* Stock text under price */}
-                    {stock === 0 ? (
+                    {isSoldOut ? (
                       <p className="text-destructive text-xs font-semibold mt-1">Utsolgt</p>
+                    ) : isPreorderable ? (
+                      <p className="text-gold text-xs font-semibold mt-1">Forhåndsbestilling</p>
                     ) : stock <= 5 ? (
                       <p className="text-warning text-xs font-semibold mt-1">
                         {stock} igjen

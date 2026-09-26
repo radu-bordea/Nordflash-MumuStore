@@ -3,33 +3,30 @@ import { z, ZodType } from "zod";
 export const productSchema = z.object({
   name: z
     .string()
-    .min(2, {
-      message: "Navnet må være minst 2 tegn.",
-    })
+    .min(2, { message: "Navnet må være minst 2 tegn." })
     .max(100, {
       message: "Navnet må være mindre enn 100 tegn.",
     }),
   company: z.string(),
   featured: z.coerce.boolean(),
-  price: z.coerce.number().int().min(0, {
-    message: "Prisen må være et positivt tall.",
-  }),
-
-  stock: z.coerce.number().int().min(0, {
-    message: "Lagerbeholdning må være 0 eller mer.",
-  }),
-
+  price: z.coerce
+    .number()
+    .int()
+    .min(0, { message: "Prisen må være et positivt tall." }),
+  stock: z.coerce
+    .number()
+    .int()
+    .min(0, { message: "Lagerbeholdning må være 0 eller mer." }),
+  allowPreorder: z.coerce.boolean(),
+  preorderNote: z.string().optional(),
   description: z.string().refine(
     (description) => {
       const wordCount = description.split(" ").length;
       return wordCount >= 10 && wordCount <= 1000;
     },
-    {
-      message: "Beskrivelsen må være mellom 10 og 1000 ord.",
-    },
+    { message: "Beskrivelsen må være mellom 10 og 1000 ord." },
   ),
 });
-
 export function validateWithZodSchema<T>(schema: ZodType<T>, data: unknown): T {
   const result = schema.safeParse(data);
 
@@ -51,7 +48,10 @@ function validateImageFile() {
   const acceptedFileTypes = ["image/jpeg", "image/png", "image/webp"];
   return z
     .instanceof(File)
-    .refine((file) => file.size <= maxUploadSize, "Filstørrelsen må være mindre enn 1 MB")
+    .refine(
+      (file) => file.size <= maxUploadSize,
+      "Filstørrelsen må være mindre enn 1 MB",
+    )
     .refine(
       (file) => acceptedFileTypes.includes(file.type),
       "Bildet må være JPG, PNG eller WebP",

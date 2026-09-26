@@ -24,6 +24,9 @@
 - npm install --save @stripe/react-stripe-js @stripe/stripe-js stripe axios
 (read: https://docs.stripe.com/checkout/embedded/quickstart)
 - npm install browser-image-compression
+- npm install recharts
+- npm install @react-pdf/renderer
+- npm install html2canvas jspdf
 
 # prisma
 - npm install prisma tsx @types/pg --save-dev

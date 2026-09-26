@@ -5,6 +5,8 @@ import { FirstColumn, SecondColumn, FourthColumn } from "./CartItemColumns";
 import ThirdColumn from "./ThirdColumn";
 import { CartItemWithProduct } from "@/utils/types";
 
+const MAX_PREORDER_AMOUNT = 10;
+
 export default function CartItemsList({
   cartItems,
 }: {
@@ -14,7 +16,10 @@ export default function CartItemsList({
     <div>
       {cartItems.map((cartItem) => {
         const { id, amount, product } = cartItem;
-        const { image, name, company, price, stock, id: productId } = product;
+        const { image, name, company, price, stock, allowPreorder, id: productId } = product;
+
+        const isPreorderItem = stock === 0 && allowPreorder;
+        const maxAmount = isPreorderItem ? MAX_PREORDER_AMOUNT : stock;
 
         return (
           <Card
@@ -23,7 +28,7 @@ export default function CartItemsList({
           >
             <FirstColumn image={image} name={name} />
             <SecondColumn name={name} company={company} productId={productId} />
-            <ThirdColumn id={id} quantity={amount} maxAmount={stock} />
+            <ThirdColumn id={id} quantity={amount} maxAmount={maxAmount} />
             <FourthColumn price={price} />
           </Card>
         );

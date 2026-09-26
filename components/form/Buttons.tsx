@@ -11,16 +11,20 @@ import { toast } from "sonner";
 
 type btnSize = "default" | "lg" | "sm";
 
+
+
 type SubmitButtonProps = {
   className?: string;
   text?: string;
   size?: btnSize;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>; // new
 };
 
 export function SubmitButton({
   className = "",
   text = "submit",
   size = "lg",
+  onClick, // new
 }: SubmitButtonProps) {
   const { pending } = useFormStatus();
 
@@ -30,6 +34,7 @@ export function SubmitButton({
       disabled={pending}
       className={cn("capitalize", className)}
       size={size}
+      onClick={onClick} // new
     >
       {pending ? (
         <>
@@ -110,9 +115,11 @@ export const CardSubmitButton = ({ isFavorite }: { isFavorite: boolean }) => {
 };
 
 export const ProductSignInButton = () => {
-  return <SignInButton mode="modal">
-    <Button type="button" className="mt-8 capitalize">
-      logg inn
-    </Button>
-  </SignInButton>;
+  return (
+    <SignInButton mode="modal">
+      <Button type="button" className="mt-8 capitalize">
+        logg inn
+      </Button>
+    </SignInButton>
+  );
 };

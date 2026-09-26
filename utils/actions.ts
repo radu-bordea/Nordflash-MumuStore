@@ -1,6 +1,6 @@
 "use server";
 import prisma from "@/lib/prisma";
-import { auth, currentUser, EmailAddress } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import {
   imageSchema,
@@ -11,11 +11,6 @@ import {
 import { deleteImage, uploadImage } from "./supabase";
 import { revalidatePath } from "next/cache";
 import { Cart } from "@/app/generated/prisma/client";
-
-
-
-console.log("PRISMA INSTANCE:", prisma);
-console.log("PRISMA MODELS:", prisma && Object.keys(prisma));
 
 const VAT_RATE = 0.25; // Norwegian MVA. Shop prices already include it.
 const round2 = (n: number) => Math.round(n * 100) / 100;
@@ -29,7 +24,6 @@ const getAuthUser = async () => {
 const getAdminUser = async () => {
   const user = await getAuthUser();
   const admins: string[] = process.env.ADMIN_USER_IDS?.split(",") ?? [];
-  console.log(admins, user.id);
 
   if (!admins.includes(user.id)) redirect("/");
   return user;
@@ -85,7 +79,7 @@ export const createProductAction = async (
   prevState: unknown,
   formData: FormData,
 ): Promise<{ message: string }> => {
-  const user = await getAuthUser();
+  const user = await getAdminUser();
   try {
     const rawData = Object.fromEntries(formData);
     const file = formData.get("image") as File;
@@ -177,7 +171,7 @@ export const updateProductImageAction = async (
   prevState: unknown,
   formData: FormData,
 ) => {
-  await getAuthUser();
+  await getAdminUser();
   try {
     const image = formData.get("image") as File;
     const productId = formData.get("id") as string;
@@ -375,14 +369,6 @@ export const fetchCartItems = async () => {
   return cart?.numItemsInCart || 0;
 };
 
-const fetchProduct = async (productId: string) => {
-  const product = await prisma.product.findUnique({
-    where: { id: productId },
-  });
-  if (!product) throw new Error("Produkt ikke funnet");
-  return product;
-};
-
 const includeProductClause = {
   cartItems: {
     include: {
@@ -440,6 +426,10 @@ const updateOrCreateCartItem = async ({
     throw new Error("Ugyldig antall");
   }
 
+  // Preorder items have stock 0 by definition, so the normal stock check
+  // doesn't apply to them.
+  const isPreorderItem = product.stock === 0 && product.allowPreorder;
+
   const cartItem = await prisma.cartItem.findFirst({
     where: {
       productId,
@@ -449,7 +439,7 @@ const updateOrCreateCartItem = async ({
 
   const newAmount = cartItem ? cartItem.amount + amount : amount;
 
-  if (newAmount > product.stock) {
+  if (!isPreorderItem && newAmount > product.stock) {
     throw new Error("Ikke nok varer på lager");
   }
 
@@ -581,7 +571,10 @@ export const updateCartItemAction = async ({
 
     if (!cartItem) throw new Error("Cart item not found");
 
-    if (amount > cartItem.product.stock) {
+    const isPreorderItem =
+      cartItem.product.stock === 0 && cartItem.product.allowPreorder;
+
+    if (!isPreorderItem && amount > cartItem.product.stock) {
       throw new Error("Ikke nok varer på lager");
     }
 
@@ -603,7 +596,6 @@ export const updateCartItemAction = async ({
   }
 };
 
-// THIS MUST BE CHECKED ---!!!---
 export const createOrderAction = async (
   _prevState: unknown,
   _formData: FormData,
@@ -618,21 +610,23 @@ export const createOrderAction = async (
       errorOnFailure: true,
     });
     cartId = cart.id;
-    console.log("✅ Cart found:", cartId);
 
     const cartItems = await prisma.cartItem.findMany({
       where: { cartId: cart.id },
       include: { product: true },
     });
 
-    console.log("✅ Cart items count:", cartItems.length);
-
     if (cartItems.length === 0) {
       throw new Error("Cart is empty");
     }
 
+    // Stock check unchanged for in-stock items. A preorder item (stock 0,
+    // allowPreorder true) is allowed through even at 0 stock — that's the
+    // whole point of a preorder.
     for (const item of cartItems) {
-      if (item.amount > item.product.stock) {
+      const isPreorderItem =
+        item.product.stock === 0 && item.product.allowPreorder;
+      if (!isPreorderItem && item.amount > item.product.stock) {
         throw new Error(`Produkt ${item.product.name} er utsolgt`);
       }
     }
@@ -640,6 +634,10 @@ export const createOrderAction = async (
     await prisma.order.deleteMany({
       where: { clerkId: user.id, isPaid: false },
     });
+
+    const anyPreorder = cartItems.some(
+      (item) => item.product.stock === 0 && item.product.allowPreorder,
+    );
 
     const order = await prisma.order.create({
       data: {
@@ -649,12 +647,21 @@ export const createOrderAction = async (
         tax: cart.tax,
         shipping: cart.shipping,
         email: user.emailAddresses[0].emailAddress,
-        isPaid: false, // ← explicitly set, never rely on DB default
+        isPaid: false,
+        isPreorder: anyPreorder,
+        orderItems: {
+          create: cartItems.map((item) => ({
+            productId: item.productId,
+            name: item.product.name,
+            price: item.product.price,
+            quantity: item.amount,
+            isPreorder: item.product.stock === 0 && item.product.allowPreorder,
+          })),
+        },
       },
     });
 
     orderId = order.id;
-    console.log("✅ Order created:", orderId, "isPaid:", order.isPaid);
   } catch (error) {
     console.log("❌ createOrderAction error:", error);
     return renderError(error);
@@ -677,15 +684,114 @@ export const fetchUserOrders = async () => {
   return orders;
 };
 
-export const fetchAdminOrders = async () => {
-  const user = await getAdminUser();
-  const orders = await prisma.order.findMany({
-    where: {
-      isPaid: true,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
+
+// `any` here since we haven't wired up Prisma.OrderWhereInput from your
+// generated client yet — safe to tighten once you paste schema.prisma.
+export type SalesFilters = {
+  from?: string;
+  to?: string;
+  email?: string;
+  preorderOnly?: boolean; // new
+};
+
+const buildOrdersWhere = ({ from, to, email, preorderOnly }: SalesFilters) => {
+  const where: any = { isPaid: true };
+
+  if (from || to) {
+    where.createdAt = {};
+    if (from) {
+      const [y, m, d] = from.split("-").map(Number);
+      where.createdAt.gte = new Date(y, m - 1, d, 0, 0, 0, 0);
+    }
+    if (to) {
+      const [y, m, d] = to.split("-").map(Number);
+      where.createdAt.lte = new Date(y, m - 1, d, 23, 59, 59, 999);
+    }
+  }
+
+  if (email) {
+    where.email = { contains: email, mode: "insensitive" };
+  }
+
+  if (preorderOnly) {
+    where.isPreorder = true;
+  }
+
+  return where;
+};
+
+export const fetchAdminOrders = async (filters: SalesFilters = {}) => {
+  await getAdminUser();
+  const where = buildOrdersWhere(filters);
+  return prisma.order.findMany({
+    where,
+    include: { orderItems: true },
+    orderBy: { createdAt: "desc" },
   });
-  return orders;
+};
+
+export type GroupBy = "day" | "month" | "year";
+
+const groupKey = (date: Date, groupBy: GroupBy) => {
+  if (groupBy === "year") return `${date.getFullYear()}`;
+  if (groupBy === "month")
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+  return date.toISOString().slice(0, 10);
+};
+
+export const fetchSalesSummary = async (
+  filters: SalesFilters = {},
+  groupBy: GroupBy = "day",
+) => {
+  await getAdminUser();
+  const where = buildOrdersWhere(filters);
+  const orders = await prisma.order.findMany({
+    where,
+    include: { orderItems: true },
+    orderBy: { createdAt: "asc" },
+  });
+
+  const totals = orders.reduce(
+    (acc, o) => {
+      acc.orderTotal += o.orderTotal;
+      acc.tax += o.tax;
+      acc.shipping += o.shipping;
+      acc.count += 1;
+      return acc;
+    },
+    { orderTotal: 0, tax: 0, shipping: 0, count: 0 },
+  );
+
+  const grouped = new Map<string, { total: number; count: number }>();
+  for (const o of orders) {
+    const key = groupKey(o.createdAt, groupBy);
+    const entry = grouped.get(key) ?? { total: 0, count: 0 };
+    entry.total += o.orderTotal;
+    entry.count += 1;
+    grouped.set(key, entry);
+  }
+
+  const chartData = Array.from(grouped.entries())
+    .map(([period, v]) => ({ period, total: v.total, count: v.count }))
+    .sort((a, b) => a.period.localeCompare(b.period));
+
+  return { orders, totals, chartData };
+};
+
+export const markOrderItemFulfilledAction = async (
+  prevState: unknown,
+  formData: FormData,
+) => {
+  await getAdminUser();
+  try {
+    const orderItemId = formData.get("orderItemId") as string;
+    await prisma.orderItem.update({
+      where: { id: orderItemId },
+      data: { preorderFulfilled: true },
+    });
+    revalidatePath("/admin/sales");
+    return { message: "Merket som fullført" };
+  } catch (error) {
+    return renderError(error);
+  }
 };
