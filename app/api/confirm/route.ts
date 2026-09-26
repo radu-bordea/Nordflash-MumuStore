@@ -1,7 +1,7 @@
 import Stripe from "stripe";
 import { NextRequest } from "next/server";
 import { redirect } from "next/navigation";
-   import { fulfillOrder } from "@/utils/fullfillOrder";
+import { fulfillOrder } from "@/utils/fulfillOrder";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 

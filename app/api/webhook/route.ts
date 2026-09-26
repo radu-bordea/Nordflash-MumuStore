@@ -1,36 +1,50 @@
-import prisma from "@/lib/prisma";
+import Stripe from "stripe";
+import { NextRequest } from "next/server";
+import { fulfillOrder } from "@/utils/fulfillOrder";
 
-export const fulfillOrder = async (orderId: string, cartId: string) => {
-  await prisma.$transaction(async (tx) => {
-    const order = await tx.order.findUnique({ where: { id: orderId } });
-    if (!order || order.isPaid) return;
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET as string;
 
-    const cart = await tx.cart.findUnique({
-      where: { id: cartId },
-      include: { cartItems: { include: { product: true } } },
-    });
-    if (!cart) return;
+export const POST = async (req: NextRequest) => {
+  const body = await req.text();
+  const signature = req.headers.get("stripe-signature");
 
-    for (const item of cart.cartItems) {
-      const isPreorderItem =
-        item.product.stock === 0 && item.product.allowPreorder;
+  if (!signature) {
+    return Response.json({ error: "Missing signature" }, { status: 400 });
+  }
 
-      // Preorder items have no stock to decrement — skip the check entirely.
-      if (isPreorderItem) continue;
+  let event: Stripe.Event;
+  try {
+    event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+  } catch (error) {
+    console.error("Webhook signature verification failed:", error);
+    return Response.json({ error: "Invalid signature" }, { status: 400 });
+  }
 
-      const result = await tx.product.updateMany({
-        where: { id: item.productId, stock: { gte: item.amount } },
-        data: { stock: { decrement: item.amount } },
-      });
-      if (result.count === 0) {
-        throw new Error(`Produkt ${item.product.name} er utsolgt`);
+  try {
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object as Stripe.Checkout.Session;
+      const orderId = session.metadata?.orderId;
+      const cartId = session.metadata?.cartId;
+
+      if (orderId && cartId && session.payment_status === "paid") {
+        await fulfillOrder(orderId, cartId);
       }
     }
 
-    await tx.order.update({
-      where: { id: orderId },
-      data: { isPaid: true },
-    });
-    await tx.cart.delete({ where: { id: cartId } });
-  });
+    if (event.type === "checkout.session.async_payment_succeeded") {
+      const session = event.data.object as Stripe.Checkout.Session;
+      const orderId = session.metadata?.orderId;
+      const cartId = session.metadata?.cartId;
+
+      if (orderId && cartId) {
+        await fulfillOrder(orderId, cartId);
+      }
+    }
+  } catch (error) {
+    console.error("Webhook fulfillment error:", error);
+    return Response.json({ error: "Fulfillment failed" }, { status: 500 });
+  }
+
+  return Response.json({ received: true });
 };

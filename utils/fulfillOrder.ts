@@ -15,7 +15,6 @@ export const fulfillOrder = async (orderId: string, cartId: string) => {
       const isPreorderItem =
         item.product.stock === 0 && item.product.allowPreorder;
 
-      // Preorder items have no stock to decrement — skip the check entirely.
       if (isPreorderItem) continue;
 
       const result = await tx.product.updateMany({
