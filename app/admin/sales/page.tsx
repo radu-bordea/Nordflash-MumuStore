@@ -119,7 +119,10 @@ async function SalesPage({
                   <TableCell>{formatDate(createdAt)}</TableCell>
                   <TableCell>
                     {isPreorder && (
-                      <span className="rounded-full bg-gold/20 px-2 py-0.5 text-xs font-medium text-gold">
+                      <span
+                        className="rounded-full px-2 py-0.5 text-xs font-medium"
+                        style={{ color: "#a68f4e" }}
+                      >
                         Forhåndsbestilling
                       </span>
                     )}

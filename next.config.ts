@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   images: {
     remotePatterns: [
       {
@@ -15,13 +14,16 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "jcgvrkwcwllawmdghsfy.supabase.co",
+        // Serve Supabase images directly, skipping Next's
+        // fetch-resize-reencode pipeline, which is timing out.
       },
     ],
+    unoptimized: false, // keep optimization for Pexels/Clerk images
   },
 
   experimental: {
     serverActions: {
-      bodySizeLimit: "4mb"
+      bodySizeLimit: "4mb",
     },
   },
 };
