@@ -514,11 +514,11 @@ export const addToCartAction = async (
 
     // refresh navbar cart icon
     revalidatePath("/", "layout");
-  } catch (error) {
-    renderError(error);
-  }
 
-  redirect("/cart");
+    return { message: "Lagt i handlekurven" };
+  } catch (error) {
+    return renderError(error);
+  }
 };
 
 export const removeCartItemAction = async (

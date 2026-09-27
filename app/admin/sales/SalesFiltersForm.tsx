@@ -41,9 +41,9 @@ function SalesFiltersForm() {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    applyParams({ from, to, email });
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+    applyParams({ from, to, email: value });
   };
 
   const setQuickRange = (
@@ -77,7 +77,7 @@ function SalesFiltersForm() {
 
   return (
     <div className="mb-6 space-y-4 rounded-lg border border-border bg-card p-4">
-      <form onSubmit={handleSubmit} className="flex flex-wrap items-end gap-4">
+      <div className="flex flex-wrap items-end gap-4">
         <div>
           <Label htmlFor="from">Fra dato</Label>
           <Input
@@ -103,12 +103,11 @@ function SalesFiltersForm() {
             type="text"
             placeholder="navn@epost.no"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => handleEmailChange(e.target.value)}
             className="min-w-50"
           />
         </div>
-        <Button type="submit">Filtrer</Button>
-      </form>
+      </div>
 
       <div className="flex flex-wrap items-center gap-2">
         <Button

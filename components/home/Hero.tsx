@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
 
-import hero1 from "@/public/images/hero1.jpg";
+import hero1 from "@/public/images/hero1.png";
 import hero2 from "@/public/images/hero2.jpg";
 import hero3 from "@/public/images/hero3.jpg";
 
@@ -14,7 +14,7 @@ const slides = [
     image: hero1,
     title: "Naturlig Hudpleie",
     description:
-      "Oppdag skånsomme og effektive ansiktsprodukter laget for å gi huden din en sunn og naturlig glød.",
+      "Premium marokkanske skjonnhetsprodukter utviklet for å fremheve din selvtillit og naturlige glød.",
   },
   {
     image: hero2,
@@ -50,7 +50,9 @@ export default function Hero() {
             <div
               key={index}
               className={`absolute inset-0 transition-opacity duration-700 ${
-                index === current ? "opacity-100" : "opacity-0 pointer-events-none"
+                index === current
+                  ? "opacity-100"
+                  : "opacity-0 pointer-events-none"
               }`}
             >
               <h1 className="text-4xl sm:text-6xl font-semibold leading-[1.05] tracking-tight text-foreground">
