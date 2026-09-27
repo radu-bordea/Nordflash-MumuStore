@@ -9,33 +9,22 @@ function ProductsList({ products }: { products: Product[] }) {
   return (
     <div className="mt-12 grid gap-y-8">
       {products.map((product) => {
-        const { name, price, image, company, stock } = product;
+        const { name, price, image, company, stock, allowPreorder } = product;
         const productId = product.id;
         const dollarsAmount = formatCurrency(price);
+        const isSoldOut = stock === 0 && !allowPreorder;
+        const isPreorderable = stock === 0 && allowPreorder;
 
         return (
           <article key={productId} className="group relative">
-            <Link href={stock === 0 ? "#" : `/products/${productId}`}>
+            <Link href={isSoldOut ? "#" : `/products/${productId}`}>
               <Card
-                className={`transform group-hover:shadow-xl transition-shadow duration-500 relative ${
-                  stock === 0 ? "opacity-50 pointer-events-none" : ""
+                className={`transform bg-card border-border group-hover:border-gold/60 group-hover:shadow-xl transition-all duration-500 relative ${
+                  isSoldOut ? "opacity-50 pointer-events-none" : ""
                 }`}
               >
-                {/* Stock badge */}
-                {/* <div className="absolute top-3 left-3 z-10">
-                  {stock === 0 ? (
-                    <span className="bg-red-500 text-white px-2 py-1 text-xs rounded">
-                      Utsolgt
-                    </span>
-                  ) : stock <= 5 ? (
-                    <span className="bg-yellow-400 text-black px-2 py-1 text-xs rounded">
-                      {stock} igjen
-                    </span>
-                  ) : null}
-                </div> */}
-
                 <CardContent className="p-8 gap-y-4 grid md:grid-cols-3">
-                  <div className="relative h-64 md:h-48 md:w-48">
+                  <div className="relative h-64 md:h-48 md:w-48 rounded-md overflow-hidden bg-muted">
                     <Image
                       src={image}
                       alt={name}
@@ -47,22 +36,25 @@ function ProductsList({ products }: { products: Product[] }) {
                   </div>
 
                   <div>
-                    <h2 className="text-xl font-semibold capitalize">{name}</h2>
+                    <h2 className="text-xl font-semibold capitalize text-card-foreground">
+                      {name}
+                    </h2>
                     <h4 className="text-muted-foreground">{company}</h4>
                   </div>
 
                   <div className="md:ml-auto">
-                    <p className="text-muted-foreground text-lg">{dollarsAmount}</p>
+                    <p className="text-primary text-lg font-medium">{dollarsAmount}</p>
 
-                    {/* Stock text under price */}
-                    {stock === 0 ? (
-                      <p className="text-red-500 text-xs font-semibold mt-1">Utsolgt</p>
+                    {isSoldOut ? (
+                      <p className="text-destructive text-xs font-semibold mt-1">Utsolgt</p>
+                    ) : isPreorderable ? (
+                      <p className="text-gold text-xs font-semibold mt-1">Forhåndsbestilling</p>
                     ) : stock <= 5 ? (
-                      <p className="text-yellow-600 text-xs font-semibold mt-1">
+                      <p className="text-warning text-xs font-semibold mt-1">
                         {stock} igjen
                       </p>
                     ) : (
-                      <p className="text-green-600 text-xs font-medium mt-1">På lager</p>
+                      <p className="text-success text-xs font-medium mt-1">På lager</p>
                     )}
                   </div>
                 </CardContent>
