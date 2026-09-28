@@ -135,7 +135,7 @@ async function EditProductPage({ params }: { params: Params }) {
             required={false}
             />
           </div>
-          <SubmitButton text="oppdater produktet" className="mt-8" />
+          <SubmitButton text="oppdater produktet" className="mt-8 cursor-pointer" />
         </FormContainer>
       </div>
     </section>

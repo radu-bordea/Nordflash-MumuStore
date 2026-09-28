@@ -50,7 +50,13 @@ export function SubmitButton({
 
 type actionType = "edit" | "delete";
 
-export const IconButton = ({ actionType }: { actionType: actionType }) => {
+export const IconButton = ({
+  actionType,
+  confirmMessage,
+}: {
+  actionType: actionType;
+  confirmMessage?: string;
+}) => {
   const { pending } = useFormStatus();
 
   const renderIcon = () => {
@@ -71,9 +77,13 @@ export const IconButton = ({ actionType }: { actionType: actionType }) => {
       size="icon"
       variant="link"
       className="p-2 cursor-pointer"
-      onClick={() => toast(`${actionType}`)}
+      onClick={(e) => {
+        if (confirmMessage && !window.confirm(confirmMessage)) {
+          e.preventDefault();
+        }
+      }}
     >
-      {pending ? <ReloadIcon className="animate" /> : renderIcon()}
+      {pending ? <ReloadIcon className="animate-spin" /> : renderIcon()}
     </Button>
   );
 };
@@ -117,7 +127,7 @@ export const CardSubmitButton = ({ isFavorite }: { isFavorite: boolean }) => {
 export const ProductSignInButton = () => {
   return (
     <SignInButton mode="modal">
-      <Button type="button" className="mt-8 capitalize">
+      <Button type="button" className="mt-8 capitalize cursor-pointer">
         logg inn
       </Button>
     </SignInButton>

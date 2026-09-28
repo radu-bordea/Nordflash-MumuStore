@@ -111,6 +111,7 @@ function SalesFiltersForm() {
 
       <div className="flex flex-wrap items-center gap-2">
         <Button
+          className="cursor-pointer"
           type="button"
           variant="outline"
           size="sm"
@@ -119,6 +120,7 @@ function SalesFiltersForm() {
           Denne måneden
         </Button>
         <Button
+          className="cursor-pointer"
           type="button"
           variant="outline"
           size="sm"
@@ -127,6 +129,7 @@ function SalesFiltersForm() {
           Forrige måned
         </Button>
         <Button
+        className="cursor-pointer"
           type="button"
           variant="outline"
           size="sm"
@@ -135,6 +138,7 @@ function SalesFiltersForm() {
           Dette året
         </Button>
         <Button
+        className="cursor-pointer"
           type="button"
           variant="outline"
           size="sm"
@@ -149,6 +153,7 @@ function SalesFiltersForm() {
         variant={preorderOnly ? "default" : "outline"}
         size="sm"
         onClick={togglePreorderOnly}
+        className="cursor-pointer"
       >
         Kun forhåndsbestillinger
       </Button>
@@ -157,6 +162,7 @@ function SalesFiltersForm() {
         <Label className="mr-1">Grupper etter</Label>
         {(["day", "month", "year"] as const).map((g) => (
           <Button
+          className="capitalize cursor-pointer"
             key={g}
             type="button"
             size="sm"

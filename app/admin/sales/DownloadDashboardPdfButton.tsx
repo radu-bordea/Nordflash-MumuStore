@@ -59,7 +59,7 @@ pdf.save(`salgsdashboard-${new Date().toISOString().slice(0, 10)}.pdf`);
   };
 
   return (
-    <Button type="button" variant="outline" onClick={handleDownload} disabled={loading}>
+    <Button type="button" variant="outline" onClick={handleDownload} disabled={loading} className="cursor-pointer">
       <LuImage className="mr-2 h-4 w-4" />
       {loading ? "Genererer..." : "Last ned dashboard (PDF)"}
     </Button>

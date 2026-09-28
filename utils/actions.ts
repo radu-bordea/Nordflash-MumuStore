@@ -115,6 +115,18 @@ export const deleteProductAction = async (prevState: { productId: string }) => {
   const { productId } = prevState;
   await getAdminUser();
   try {
+    const orderItemCount = await prisma.orderItem.count({
+      where: { productId },
+    });
+
+    if (orderItemCount > 0) {
+      return {
+        message:
+          "Produktet kan ikke slettes fordi det finnes i én eller flere bestillinger. Sett lagerbeholdningen til 0 og slå av forhåndsbestilling i stedet.",
+        error: true,
+      };
+    }
+
     const product = await prisma.product.delete({
       where: {
         id: productId,
@@ -124,8 +136,17 @@ export const deleteProductAction = async (prevState: { productId: string }) => {
     await deleteImage(product.image);
 
     revalidatePath("/admin/products");
-    return { message: "product removed" };
+    return { message: "Produktet er slettet" };
   } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message.includes("Foreign key constraint")
+    ) {
+      return {
+        message: "Produktet kan ikke slettes fordi det brukes andre steder.",
+        error: true,
+      };
+    }
     return renderError(error);
   }
 };

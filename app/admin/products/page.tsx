@@ -1,6 +1,7 @@
 import EmptyList from "@/components/global/EmptyList";
 import { deleteProductAction, fetchAdminProducts } from "@/utils/actions";
 import Link from "next/link";
+import Image from "next/image";
 import { formatCurrency } from "@/utils/format";
 import {
   Table,
@@ -21,7 +22,7 @@ async function ItemsPage() {
   return (
     <section>
       <Table>
-        <TableCaption className="capitalize">
+        <TableCaption className="capitalize text-foreground font-medium py-2">
           totale produkter : {items.length}
         </TableCaption>
 
@@ -37,16 +38,35 @@ async function ItemsPage() {
 
         <TableBody>
           {items.map((item) => {
-            const { id: productId, name, company, price, stock } = item;
+            const {
+              id: productId,
+              name,
+              company,
+              price,
+              stock,
+              image,
+              allowPreorder,
+            } = item;
 
             return (
               <TableRow key={productId}>
                 <TableCell>
                   <Link
-                    href={`/products/${productId}`}
-                    className="underline text-muted-foreground tracking-wide capitalize"
+                    href={`/admin/products/${productId}/edit`}
+                    className="flex items-center gap-3"
                   >
-                    {name}
+                    <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md bg-muted">
+                      <Image
+                        src={image}
+                        alt={name}
+                        fill
+                        sizes="48px"
+                        className="object-cover"
+                      />
+                    </div>
+                    <span className="underline text-muted-foreground tracking-wide capitalize">
+                      {name}
+                    </span>
                   </Link>
                 </TableCell>
 
@@ -57,13 +77,20 @@ async function ItemsPage() {
                 <TableCell
                   className={`font-semibold ${
                     stock === 0
-                      ? "text-red-600"
+                      ? allowPreorder
+                        ? "text-gold"
+                        : "text-destructive"
                       : stock <= 5
-                      ? "text-yellow-600"
-                      : "text-green-600"
+                        ? "text-warning"
+                        : "text-success"
                   }`}
                 >
                   {stock}
+                  {stock === 0 && allowPreorder && (
+                    <span className="ml-2 text-xs font-normal">
+                      (forhåndsbestilling)
+                    </span>
+                  )}
                 </TableCell>
 
                 <TableCell>
@@ -73,6 +100,13 @@ async function ItemsPage() {
                     </Link>
 
                     <DeleteProduct productId={productId} />
+
+                    <Link
+                      href={`/products/${productId}`}
+                      className="text-xs text-muted-foreground underline"
+                    >
+                      Vis i butikk
+                    </Link>
                   </div>
                 </TableCell>
               </TableRow>
@@ -84,12 +118,15 @@ async function ItemsPage() {
   );
 }
 
-function DeleteProduct({ productId }: { productId: string }) {
+function DeleteProduct({ productId, name }: { productId: string; name: string }) {
   const deleteProduct = deleteProductAction.bind(null, { productId });
 
   return (
     <FormContainer action={deleteProduct}>
-      <IconButton actionType="delete" />
+      <IconButton
+        actionType="delete"
+        confirmMessage={`Er du sikker på at du vil slette "${name}"? Dette kan ikke angres.`}
+      />
     </FormContainer>
   );
 }

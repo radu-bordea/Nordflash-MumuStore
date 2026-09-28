@@ -19,8 +19,8 @@ function FormInput({
   required = true,
 }: FormInputProps) {
   return (
-    <div className="mb-2">
-      <Label htmlFor={name} className="capitalize">
+    <div className="mb-2 space-y-0.5">
+      <Label htmlFor={name} className="capitalize text-primary mb-1">
         {label || name}
       </Label>
       <Input

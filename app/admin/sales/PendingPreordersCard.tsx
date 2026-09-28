@@ -46,7 +46,7 @@ function PendingPreordersCard({ orders }: { orders: OrderWithItems[] }) {
             </div>
             <FormContainer action={markOrderItemFulfilledAction}>
               <input type="hidden" name="orderItemId" value={item.id} />
-              <SubmitButton text="Marker som fullført" size="sm" />
+              <SubmitButton text="Marker som fullført" size="sm" className="cursor-pointer"/>
             </FormContainer>
           </div>
         ))}

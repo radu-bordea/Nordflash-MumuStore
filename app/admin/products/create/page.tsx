@@ -20,7 +20,7 @@ type FormInputNumberProps = {
 function NumberInput({ defaultValue, name, label, min = 0 }: FormInputNumberProps) {
   return (
     <div className="mb-2">
-      <Label htmlFor={name} className="capitalize mb-2">
+      <Label htmlFor={name} className="capitalize mb-2 text-primary"> 
         {label}
       </Label>
       <Input
@@ -68,7 +68,7 @@ const CreateProductPage = () => {
               label="bedrift"
               defaultValue={company}
             />
-            <PriceInput defaultValue={100} />
+            <PriceInput defaultValue={100}/>
             <StockInput defaultValue={0} />
             <ImageInput />
           </div>
@@ -77,7 +77,7 @@ const CreateProductPage = () => {
             labelText="produktbeskrivelse"
             defaultValue={description}
           />
-          <div className="mt-6 space-y-4">
+          <div className="mt-6 space-y-6">
             <CheckboxInput name="featured" label="fremhevet" />
             <CheckboxInput name="allowPreorder" label="tillat forhåndsbestilling" />
           </div>
@@ -89,7 +89,7 @@ const CreateProductPage = () => {
               placeholder="F.eks. Forventet på lager om 2 uker"
             />
           </div>
-          <SubmitButton text="lage produkt" className="mt-8" />
+          <SubmitButton text="lage produkt" className="mt-8 cursor-pointer" />
         </FormContainer>
       </div>
     </section>
