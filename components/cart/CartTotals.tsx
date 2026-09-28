@@ -25,7 +25,7 @@ function CartTotals({ cart }: { cart: Cart }) {
         )}
       </Card>
       <form action={createOrderAction as any}>
-        <SubmitButton text="Gå til betaling" className="w-full mt-8" />
+        <SubmitButton text="Gå til betaling" className="w-full mt-8 cursor-pointer" />
       </form>
     </div>
   );

@@ -99,7 +99,7 @@ async function ItemsPage() {
                       <IconButton actionType="edit" />
                     </Link>
 
-                    <DeleteProduct productId={productId} />
+                    <DeleteProduct productId={productId} name={name} />
 
                     <Link
                       href={`/products/${productId}`}
@@ -118,7 +118,13 @@ async function ItemsPage() {
   );
 }
 
-function DeleteProduct({ productId, name }: { productId: string; name: string }) {
+function DeleteProduct({
+  productId,
+  name,
+}: {
+  productId: string;
+  name: string;
+}) {
   const deleteProduct = deleteProductAction.bind(null, { productId });
 
   return (

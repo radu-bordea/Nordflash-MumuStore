@@ -50,7 +50,7 @@ function ThirdColumn({ quantity, id, maxAmount }: ThirdColumnProps) {
       />
       <FormContainer action={removeCartItemAction}>
         <input type='hidden' name='id' value={id} />
-        <SubmitButton size='sm' className='mt-4' text='fjern' />
+        <SubmitButton size='sm' className='mt-4 cursor-pointer' text='fjern' />
       </FormContainer>
     </div>
   );

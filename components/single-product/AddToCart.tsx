@@ -39,7 +39,7 @@ function AddToCart({
           <input type="hidden" name="amount" value={amount} />
           <SubmitButton
             text={isPreorder ? "forhåndsbestill" : "legg i handlekurven"}
-            className="mt-8"
+            className="mt-8 cursor-pointer"
           />
         </FormContainer>
       ) : (
