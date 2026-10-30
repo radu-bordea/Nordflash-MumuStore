@@ -1,5 +1,11 @@
 import { auth } from "@clerk/nextjs/server";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { LuAlignLeft } from "react-icons/lu";
 import Link from "next/link";
 import { Button } from "../ui/button";
@@ -9,7 +15,7 @@ import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs";
 import SignOutLink from "./SignOutLink";
 
 async function LinksDropdown() {
-  const { userId } = await auth(); 
+  const { userId } = await auth();
   const adminIds = process.env.ADMIN_USER_IDS?.split(",") || [];
   const isAdmin = userId ? adminIds.includes(userId) : false;
 
@@ -19,7 +25,7 @@ async function LinksDropdown() {
         <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
-            className="flex gap-4 max-w-25 border-nav-foreground/30 bg-transparent text-nav-foreground hover:bg-nav-foreground/10 hover:text-nav-foreground dark:border-nav-foreground/30 dark:bg-transparent dark:hover:bg-nav-foreground/10 cursor-pointer"
+            className="flex gap-2 px-2 sm:gap-4 sm:px-4 max-w-25 border-nav-foreground/30 bg-transparent text-nav-foreground hover:bg-nav-foreground/10 hover:text-nav-foreground dark:border-nav-foreground/30 dark:bg-transparent dark:hover:bg-nav-foreground/10 cursor-pointer"
           >
             <LuAlignLeft className="w-6 h-6" />
             <UserIcon />
