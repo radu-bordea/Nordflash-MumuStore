@@ -17,6 +17,7 @@ const nextConfig: NextConfig = {
         // Serve Supabase images directly, skipping Next's
         // fetch-resize-reencode pipeline, which is timing out.
       },
+      { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
     ],
     unoptimized: false, // keep optimization for Pexels/Clerk images
   },

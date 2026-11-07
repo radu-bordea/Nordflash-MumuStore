@@ -4,6 +4,7 @@ import FormContainer from "@/components/form/FormContainer";
 import FormInput from "@/components/form/FormInput";
 import ImageInput from "@/components/form/ImageInput";
 import TextAreaInput from "@/components/form/TextAreaInput";
+import PreorderFields from "@/components/form/PreorderFields";
 import { createProductAction } from "@/utils/actions";
 import { faker } from "@faker-js/faker";
 import { Label } from "@/components/ui/label";
@@ -20,7 +21,7 @@ type FormInputNumberProps = {
 function NumberInput({ defaultValue, name, label, min = 0 }: FormInputNumberProps) {
   return (
     <div className="mb-2">
-      <Label htmlFor={name} className="capitalize mb-2 text-primary"> 
+      <Label htmlFor={name} className="capitalize mb-2 text-primary">
         {label}
       </Label>
       <Input
@@ -68,7 +69,7 @@ const CreateProductPage = () => {
               label="bedrift"
               defaultValue={company}
             />
-            <PriceInput defaultValue={100}/>
+            <PriceInput defaultValue={100} />
             <StockInput defaultValue={0} />
             <ImageInput />
           </div>
@@ -79,15 +80,7 @@ const CreateProductPage = () => {
           />
           <div className="mt-6 space-y-6">
             <CheckboxInput name="featured" label="fremhevet" />
-            <CheckboxInput name="allowPreorder" label="tillat forhåndsbestilling" />
-          </div>
-          <div className="mt-4">
-            <FormInput
-              type="text"
-              name="preorderNote"
-              label="Forhåndsbestillingsinfo (valgfritt)"
-              placeholder="F.eks. Forventet på lager om 2 uker"
-            />
+            <PreorderFields />
           </div>
           <SubmitButton text="lage produkt" className="mt-8 cursor-pointer" />
         </FormContainer>

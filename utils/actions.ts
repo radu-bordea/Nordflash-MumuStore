@@ -8,7 +8,7 @@ import {
   reviewSchema,
   validateWithZodSchema,
 } from "./schemas";
-import { deleteImage, uploadImage } from "./supabase";
+   import { deleteImage, uploadImage } from "./blob";
 import { revalidatePath } from "next/cache";
 import { Cart } from "@/app/generated/prisma/client";
 

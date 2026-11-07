@@ -27,6 +27,7 @@
 - npm install recharts
 - npm install @react-pdf/renderer
 - npm install html2canvas jspdf
+- npm install @vercel/blob
 
 # prisma
 - npm install prisma tsx @types/pg --save-dev
