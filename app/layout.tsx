@@ -13,6 +13,7 @@ const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
 });
 
+
 export const metadata: Metadata = {
   title: "MuMu Store",
   description: "Your one-stop shop for all skin routine via MuMu Store!",
