@@ -5,6 +5,7 @@ import Navbar from "@/components/navbar/Navbar";
 import Container from "@/components/global/Container";
 import Providers from "./providers";
 import { ClerkProvider } from "@clerk/nextjs";
+import Footer from "@/components/footer/Footer";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const cormorant = Cormorant_Garamond({
@@ -12,7 +13,6 @@ const cormorant = Cormorant_Garamond({
   weight: ["500", "600", "700"],
   variable: "--font-cormorant",
 });
-
 
 export const metadata: Metadata = {
   title: "MuMu Store",
@@ -27,10 +27,13 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="nb" suppressHydrationWarning>
-        <body className={`${inter.variable} ${cormorant.variable} antialiased`}>
+        <body
+          className={`${inter.variable} ${cormorant.variable} antialiased flex min-h-screen flex-col`}
+        >
           <Providers>
             <Navbar />
-            <Container className="py-6">{children}</Container>
+            <Container className="py-6 flex-1 w-full">{children}</Container>
+            <Footer />
           </Providers>
         </body>
       </html>
