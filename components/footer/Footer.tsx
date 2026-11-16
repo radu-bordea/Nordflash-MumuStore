@@ -35,7 +35,7 @@ export default function Footer() {
             </li>
             <li>{COMPANY.name}</li>
             <li>Org.nr: {COMPANY.orgNumber}</li>
-            <li>{COMPANY.address}</li>
+            {/* <li>{COMPANY.address}</li> */}
           </ul>
         </div>
 
