@@ -92,8 +92,8 @@ export default function Footer() {
           <h3 className="mb-3 font-serif text-lg">Vi leverer til</h3>
           <div className="flex items-center gap-3">
             <NorwayFlag />
-            <SwedenFlag />
-            <DenmarkFlag />
+            {/* <SwedenFlag />
+            <DenmarkFlag /> */}
           </div>
 
           <p className="mt-3 text-nav-foreground/80">
