@@ -89,7 +89,7 @@ export default function Footer() {
 
         {/* Shipping + payment */}
         <div className="text-sm">
-          <h3 className="mb-3 font-serif text-lg">Vi leverer til</h3>
+          <h3 className="mb-3 font-serif text-lg">Vi leverer i Norge</h3>
           <div className="flex items-center gap-3">
             <NorwayFlag />
             {/* <SwedenFlag />
