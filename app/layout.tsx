@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { SITE_URL, SITE_NAME } from "@/utils/seo";
+
 import { Inter, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
@@ -15,8 +17,25 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "MuMu Store",
-  description: "Your one-stop shop for all skin routine via MuMu Store!",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Lachi | Lachinova Beauty",
+    template: "%s | Lachi",
+  },
+  description:
+    "Lachi – skjønnhetsprodukter med rask levering i Norge. Handle trygt med kort, Klarna og Link. Alle priser inkl. MVA.",
+  applicationName: SITE_NAME,
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "nb_NO",
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    title: "Lachi | Lachinova Beauty",
+    description: "Skjønnhetsprodukter med rask levering i Norge.",
+  },
+  twitter: { card: "summary_large_image" },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({

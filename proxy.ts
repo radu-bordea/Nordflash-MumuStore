@@ -6,13 +6,18 @@ const isPublicRoute = createRouteMatcher([
   "/products(.*)",
   "/about",
   "/api/webhook(.*)",
+  "/sitemap.xml",
+  "/robots.txt",
+  "/opengraph-image(.*)",
 ]);
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
   const authData = await auth();
   const adminIds = process.env.ADMIN_USER_IDS?.split(",") || [];
-  const isAdminUser = authData?.userId ? adminIds.includes(authData.userId) : false;
+  const isAdminUser = authData?.userId
+    ? adminIds.includes(authData.userId)
+    : false;
 
   if (isAdminRoute(req) && !isAdminUser) {
     return NextResponse.redirect(new URL("/", req.url));

@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import { cache } from "react";
 import BreadCrumbs from "@/components/single-product/BreadCrumbs";
 import { fetchSingleProduct, findExistingReview } from "@/utils/actions";
 import Image from "next/image";
@@ -9,6 +11,33 @@ import ShareButton from "@/components/single-product/ShareButton";
 import SubmitReview from "@/components/reviews/SubmitReview";
 import ProductReviews from "@/components/reviews/ProductReviews";
 import { auth } from "@clerk/nextjs/server";
+import { SITE_URL } from "@/utils/seo";
+
+// Fetch once per request, shared by generateMetadata and the page
+const getProduct = cache((id: string) => fetchSingleProduct(id));
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const product = await getProduct(id);
+
+  const description = product.description.slice(0, 155);
+
+  return {
+    title: product.name,
+    description,
+    alternates: { canonical: `/products/${id}` },
+    openGraph: {
+      title: product.name,
+      description,
+      url: `${SITE_URL}/products/${id}`,
+      images: [{ url: product.image }],
+    },
+  };
+}
 
 async function SingleProductPage({
   params,
@@ -17,7 +46,7 @@ async function SingleProductPage({
 }) {
   const { id } = await params;
 
-  const product = await fetchSingleProduct(id);
+  const product = await getProduct(id);
 
   const { name, image, company, description, price, stock, allowPreorder, preorderNote } =
     product;
@@ -31,8 +60,37 @@ async function SingleProductPage({
   const existingReview =
     userId && !(await findExistingReview(userId, product.id));
 
+  // Structured data so Google can show price and availability
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name,
+    image: [image],
+    description,
+    brand: { "@type": "Brand", name: "Lachi" },
+    offers: {
+      "@type": "Offer",
+      url: `${SITE_URL}/products/${id}`,
+      priceCurrency: "NOK",
+      price, // whole NOK. If you store øre, use price / 100
+      availability: isSoldOut
+        ? "https://schema.org/OutOfStock"
+        : isPreorderable
+          ? "https://schema.org/PreOrder"
+          : "https://schema.org/InStock",
+      itemCondition: "https://schema.org/NewCondition",
+    },
+  };
+
   return (
     <section>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
+
       <BreadCrumbs name={product.name} />
 
       <div className="mt-6 grid gap-y-8 lg:grid-cols-2 lg:gap-x-16">
