@@ -8,9 +8,10 @@ import {
   reviewSchema,
   validateWithZodSchema,
 } from "./schemas";
-   import { deleteImage, uploadImage } from "./blob";
+import { deleteImage, uploadImage } from "./blob";
 import { revalidatePath } from "next/cache";
 import { Cart } from "@/app/generated/prisma/client";
+import { calculateShipping } from "./shipping";
 
 const VAT_RATE = 0.25; // Norwegian MVA. Shop prices already include it.
 const round2 = (n: number) => Math.round(n * 100) / 100;
@@ -494,10 +495,9 @@ export const updateCart = async (cart: Cart) => {
     cartTotal += item.amount * item.product.price;
   }
 
-  const shipping = cartTotal ? cart.shipping : 0;
+  const shipping = calculateShipping(cartTotal);
   // Prices already include MVA, so nothing is added on top.
   const orderTotal = round2(cartTotal + shipping);
-  // "Herav MVA": the VAT contained in the total (informational only)
   const tax = round2((orderTotal * VAT_RATE) / (1 + VAT_RATE));
 
   const currentCart = await prisma.cart.update({
@@ -505,6 +505,7 @@ export const updateCart = async (cart: Cart) => {
     data: {
       numItemsInCart,
       cartTotal: round2(cartTotal),
+      shipping, // new: saved on the cart
       tax,
       orderTotal,
     },
@@ -632,6 +633,9 @@ export const createOrderAction = async (
     });
     cartId = cart.id;
 
+    // NEW: recalculate totals and shipping right before the order is made
+    const { currentCart } = await updateCart(cart);
+
     const cartItems = await prisma.cartItem.findMany({
       where: { cartId: cart.id },
       include: { product: true },
@@ -641,9 +645,6 @@ export const createOrderAction = async (
       throw new Error("Cart is empty");
     }
 
-    // Stock check unchanged for in-stock items. A preorder item (stock 0,
-    // allowPreorder true) is allowed through even at 0 stock — that's the
-    // whole point of a preorder.
     for (const item of cartItems) {
       const isPreorderItem =
         item.product.stock === 0 && item.product.allowPreorder;
@@ -663,10 +664,10 @@ export const createOrderAction = async (
     const order = await prisma.order.create({
       data: {
         clerkId: user.id,
-        products: cart.numItemsInCart,
-        orderTotal: cart.orderTotal,
-        tax: cart.tax,
-        shipping: cart.shipping,
+        products: currentCart.numItemsInCart, // was cart.numItemsInCart
+        orderTotal: currentCart.orderTotal, // was cart.orderTotal
+        tax: currentCart.tax, // was cart.tax
+        shipping: currentCart.shipping, // was cart.shipping
         email: user.emailAddresses[0].emailAddress,
         isPaid: false,
         isPreorder: anyPreorder,
@@ -704,7 +705,6 @@ export const fetchUserOrders = async () => {
   });
   return orders;
 };
-
 
 // `any` here since we haven't wired up Prisma.OrderWhereInput from your
 // generated client yet — safe to tighten once you paste schema.prisma.
